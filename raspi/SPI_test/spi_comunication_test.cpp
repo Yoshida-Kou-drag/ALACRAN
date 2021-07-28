@@ -21,10 +21,11 @@ int main()
 
    unsigned char cnt = 0;
    while (1) {
-           buffer[0] = cnt;
-           cnt++;
-           result = wiringPiSPIDataRW(CHANNEL, buffer, 1);
-           cout << "result: " << result << " recieve: " << int(buffer[0]) << endl;
-           usleep(1000000);       // wait 10ms
+        std::cout << "入力してください。 value = ";
+	std::cin >> buffer[0];
+
+        result = wiringPiSPIDataRW(CHANNEL, buffer, 1);
+        cout << "result: " << result << " recieve: " << buffer[0] << endl;
+        usleep(100000);       // wait 10ms
    }
 }
