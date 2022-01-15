@@ -12,7 +12,7 @@ def mesh_scale(my_mesh, scale_x, scale_y, scale_z):
 figure = pyplot.figure()
 axes = mplot3d.Axes3D(figure)
 
-my_mesh = mesh.Mesh.from_file('../stl/flipper-left.stl')
+my_mesh = mesh.Mesh.from_file('../stl/mini-alacran.stl')
 # my_mesh = mesh_scale(my_mesh,0.1, 0.1, 0.1)
 axes.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
 
