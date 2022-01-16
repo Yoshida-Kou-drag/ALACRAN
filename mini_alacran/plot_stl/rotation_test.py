@@ -15,13 +15,13 @@ def mesh_location_zero(my_mesh):
     midPosRel = (my_mesh.max_ - my_mesh.min_)/2
     my_mesh.x = my_mesh.x - (midPosRel[0] + my_mesh.min_[0])
     my_mesh.y = my_mesh.y - (midPosRel[1] + my_mesh.min_[1])
-    my_mesh.z = my_mesh.z - (19.624 + my_mesh.min_[2])
+    my_mesh.z = my_mesh.z - (19.750 + my_mesh.min_[2])
     return my_mesh, midPosRel
 
 figure = pyplot.figure()
 axes = mplot3d.Axes3D(figure)
 
-left_arm_mesh = mesh.Mesh.from_file('../stl/flipper-left.stl')
+left_arm_mesh = mesh.Mesh.from_file('../stl/low_model/flipper-arm.stl')
 left_arm_mesh, midpos = mesh_location_zero(left_arm_mesh)
 print("mid pos is :",midpos)
 axes.add_collection3d(mplot3d.art3d.Poly3DCollection(left_arm_mesh.vectors))
