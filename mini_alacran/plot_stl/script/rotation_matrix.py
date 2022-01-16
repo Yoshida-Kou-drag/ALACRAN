@@ -1,3 +1,5 @@
+# 回転行列計算
+
 import numpy as np
 
 class RotationMatrix():
