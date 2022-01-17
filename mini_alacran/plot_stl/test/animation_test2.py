@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from mpl_toolkits.mplot3d import Axes3D
 from stl import mesh
 
 import sys
@@ -22,8 +23,8 @@ class SimulationWorld():
     def draw(self):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d', proj_type='persp')
-        scale = self.robots.final_robot.points.flatten()
-        ax.auto_scale_xyz(scale, scale, scale) 
+        self.scale = self.robots.final_robot.points.flatten()
+        ax.auto_scale_xyz(self.scale, self.scale, self.scale) 
         collection = Poly3DCollection(self.robots.final_robot.vectors,color='w',alpha=0.4,edgecolor='k') 
         ax.add_collection3d(collection)
         anim = animation.FuncAnimation(fig, self.one_step, fargs=(collection,ax),
@@ -37,16 +38,17 @@ class SimulationWorld():
 
     def one_step(self,frame,collection,ax):
         for obj in self.objects:
+            # if hasattr(obj, "draw"):
+            #     obj.draw(ax, collection)
             if hasattr(obj, "one_step"):
-                obj.one_step(frame)
-                collection.set_verts(obj.final_robot.vectors)
-                collection.do_3d_projection(collection.axes.get_figure().canvas.get_renderer())
-                # ax.add_collection3d(collection) 
+                obj.one_step(frame,ax,collection,self.scale)
+        ax.auto_scale_xyz([-100,100], [-100,100], [-100,100]) 
         return collection,ax
 
 class Robot():
     def __init__(self, first_robot) :
         self.robot_mesh={}
+        self.parts_name_list = []
 
         for parts_data in first_robot:
             parts_name = parts_data[0]
@@ -62,6 +64,7 @@ class Robot():
         
     
     def parts_add(self,parts_name,mesh_data):
+        self.parts_name_list.append(parts_name)
         self.robot_mesh[parts_name] = mesh_data
         self.robot_update()
     
@@ -75,23 +78,37 @@ class Robot():
     
     def robot_update(self):
         comb_robot=[]
+        for i in range(len(self.parts_name_list)):
+            self.robot_mesh[self.parts_name_list[i]] = MeshAdj.mesh_update(self.robot_mesh[self.parts_name_list[i]])
         for mesh_data in self.robot_mesh.values(): 
             comb_robot.append(mesh_data.data.copy())
         self.final_robot = mesh.Mesh(np.concatenate(comb_robot))
         return self.final_robot 
+    
+    def parts_center_point(self):
+        points = []
+        for mesh_data in self.robot_mesh.values():
+            points.append(MeshAdj.get_mesh_center(mesh_data))
+        return points
 
 
-    def one_step(self,frame):
+    def one_step(self,frame, ax,collection,scale):
         self.parts_rotation("body",1)
-        self.parts_rotation("left arm",-1)
-        self.parts_rotation("right arm",2)
-
+        # self.parts_rotation("left arm",-1)
+        # self.parts_rotation("right arm",2)
+        points = np.array(self.parts_center_point())
+        print("point=",points)
+        ax.clear()
+        collection.set_verts(self.final_robot.vectors)
+        collection.do_3d_projection(collection.axes.get_figure().canvas.get_renderer())
+        ax.scatter(points[:,0:1], points[:,1:2], points[:,2:3], s = 400, c = "blue")
+        # for ln in points: c = ax.scatter(points[0], points[1], points[2], s=100, marker="*", label="landmarks", color="orange")
 
 
 def trial():
 
     world=SimulationWorld(30,0.1)
-    # robot = Robot()
+    
     # meshの読み込み
     body_mesh = mesh.Mesh.from_file('../../stl/low_model/body.stl')
     left_arm_mesh = mesh.Mesh.from_file('../../stl/low_model/flipper-arm.stl')
@@ -110,8 +127,6 @@ def trial():
     world.append(robot)
 
     world.draw()
-
-
 
 
 

@@ -19,9 +19,14 @@ class MeshAdj() :
         my_mesh.z = my_mesh.z - (midPosRel[2] + my_mesh.min_[2])+axis[2]
         return my_mesh
 
+    def get_mesh_center(my_mesh):
+        midPosRel = (my_mesh.max_ - my_mesh.min_)/2 + my_mesh.min_
+        return midPosRel
+
     def mesh_update(my_mesh):
         my_mesh.update_areas()
         my_mesh.update_max()
         my_mesh.update_min()
         my_mesh.update_units()
         return my_mesh
+    

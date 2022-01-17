@@ -52,4 +52,9 @@ print(cube_comb.max_[0] - cube_comb.min_[0])
 scale = cube_comb.points.flatten()
 axes.auto_scale_xyz(scale, scale, scale)
 
+body_mesh = MeshAdj.mesh_update(body_mesh)
+points = MeshAdj.get_mesh_center(body_mesh)
+axes.scatter(points[0], points[1], points[2], s = 40, c = "blue")
+
+
 pyplot.show()
