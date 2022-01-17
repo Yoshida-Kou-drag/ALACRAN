@@ -45,8 +45,20 @@ class SimulationWorld():
         return collection,ax
 
 class Robot():
-    def __init__(self) :
+    def __init__(self, first_robot) :
         self.robot_mesh={}
+
+        for parts_data in first_robot:
+            parts_name = parts_data[0]
+            print(parts_name)
+            mesh_data = parts_data[1]
+            init_param = parts_data[2]
+            mesh_data =MeshAdj.mesh_location_zero(mesh_data,init_param)
+            self.parts_add(parts_name,mesh_data)
+            self.parts_rotation(parts_name, 90)
+
+
+        self.first_robot_state = self.robot_mesh
         
     
     def parts_add(self,parts_name,mesh_data):
@@ -70,19 +82,33 @@ class Robot():
 
 
     def one_step(self,frame):
-        self.parts_rotation("body_mesh",1)
+        self.parts_rotation("body",1)
+        self.parts_rotation("left arm",-1)
+        self.parts_rotation("right arm",2)
 
 
 
 def trial():
 
     world=SimulationWorld(30,0.1)
-    robot = Robot()
-    world.append(robot)
+    # robot = Robot()
+    # meshの読み込み
     body_mesh = mesh.Mesh.from_file('../../stl/low_model/body.stl')
+    left_arm_mesh = mesh.Mesh.from_file('../../stl/low_model/flipper-arm.stl')
+    right_arm_mesh = mesh.Mesh.from_file('../../stl/low_model/flipper-arm.stl')
+
+    # 位置の調整
     body_init_pos = [0,0,-53.036]
-    body_mesh = MeshAdj.mesh_location_zero(body_mesh,body_init_pos)
-    robot.parts_add('body_mesh',body_mesh)
+    left_arm_init_pos = [83.4,0,44.25]
+    right_arm_init_pos = [-83.4,0,44.25]
+
+    body_data = ["body",body_mesh,body_init_pos]
+    left_arm_data = ["left arm", left_arm_mesh,left_arm_init_pos]
+    right_arm_data = ["right arm", right_arm_mesh, right_arm_init_pos]
+
+    robot = Robot([body_data,left_arm_data,right_arm_data])
+    world.append(robot)
+
     world.draw()
 
 
