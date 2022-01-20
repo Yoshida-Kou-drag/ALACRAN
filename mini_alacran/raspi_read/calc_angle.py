@@ -85,7 +85,7 @@ class IMU:
 
         return acc_roll,acc_pitch
     
-    def GetSensorData(self ,recv_data):
+    def GetSensorData(self ,recv_data ,debug = True):
 
         time_stamp = time.time() - self.ut
         dt=time_stamp - self.pre_time_stamp
@@ -119,26 +119,27 @@ class IMU:
         filter_pitch = 0.995 * (self.pre_filter_pitch + self.gyro[1] * dt) + 0.005 * acc_pitch
         self.pre_filter_pitch=filter_pitch
 
-        print("Time:",time.time())
-        print("Time stamp:",time_stamp)
-        print("dt:",dt)
-        print("data type :",type(recv_data))
-        print("recv raw data:",recv_data )
-        print("------------------------------------")
-        print("X acc is :",self.acc[0] )
-        print("Y acc is :",self.acc[1] )
-        print("Z acc is :",self.acc[2] )
-        print("X gyro is :",self.gyro[0] )
-        print("Y gyro is :",self.gyro[1] )
-        print("Z gyro is :",self.gyro[2] )
-        print("------------------------------------")
-        print("gyro deg:",self.gyro_deg)
-        print("acc deg:",acc_roll,acc_pitch) 
-        print("filtering roll",filter_roll)
-        print("filtering pitch",filter_pitch)
-        print(" ")
+        if debug:
+            print("Time:",time.time())
+            print("Time stamp:",time_stamp)
+            print("dt:",dt)
+            print("data type :",type(recv_data))
+            print("recv raw data:",recv_data )
+            print("------------------------------------")
+            print("X acc is :",self.acc[0] )
+            print("Y acc is :",self.acc[1] )
+            print("Z acc is :",self.acc[2] )
+            print("X gyro is :",self.gyro[0] )
+            print("Y gyro is :",self.gyro[1] )
+            print("Z gyro is :",self.gyro[2] )
+            print("------------------------------------")
+            print("gyro deg:",self.gyro_deg)
+            print("acc deg:",acc_roll,acc_pitch) 
+            print("filtering roll",filter_roll)
+            print("filtering pitch",filter_pitch)
+            print(" ")
     
-        return filter_pitch
+        return [time_stamp, filter_roll, filter_pitch]
 
 if __name__ == "__main__":
     imu = IMU()

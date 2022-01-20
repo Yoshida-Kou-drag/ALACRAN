@@ -49,6 +49,7 @@ try :
  
  
 except KeyboardInterrupt:
+    file.close()
     pi.set_mode(gpio_pin0,pigpio.INPUT)
     pi.set_mode(gpio_pin1,pigpio.INPUT)
     pi.stop()
