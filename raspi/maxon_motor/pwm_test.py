@@ -1,11 +1,16 @@
 import pigpio
 import time
 
-gpio_pin0 = 18
-gpio_pin1 = 19
+pwm_left = 18
+pwm_right = 19
+DIRpin_left = 16
+DIRpin_right = 20
 
 pi = pigpio.pi()
-pi.set_mode(gpio_pin0, pigpio.OUTPUT)
+pi.set_mode(pwm_left, pigpio.OUTPUT)
+pi.set_mode(pwm_right, pigpio.OUTPUT)
+pi.set_mode(DIRpin_left, pigpio.OUTPUT)
+pi.set_mode(DIRpin_right, pigpio.OUTPUT)
 
 def deg_to_duty(degree):
     dc = 2.0 + (11.0-2.0)/180*(degree+90)
@@ -13,10 +18,22 @@ def deg_to_duty(degree):
 
 
 # GPIO18: 50Hz、duty比7.25%
-print(deg_to_duty(21)*10000)
-pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(21)*10000))
-pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(15)*10000))
+print("back")
+pi.write(DIRpin_left, 0)
+pi.write(DIRpin_right, 0)
+pi.hardware_PWM(pwm_left,10000,200000)
+pi.hardware_PWM(pwm_right,10000,200000)
 
-time.sleep(5)
+time.sleep(3)
 
+print("front")
+pi.write(DIRpin_left, 1)
+pi.write(DIRpin_right, 1)
+
+time.sleep(3)
+
+pi.set_mode(pwm_left,pigpio.INPUT)
+pi.set_mode(pwm_right,pigpio.INPUT)
+pi.set_mode(DIRpin_left,pigpio.INPUT)
+pi.set_mode(DIRpin_right,pigpio.INPUT)
 pi.stop()
