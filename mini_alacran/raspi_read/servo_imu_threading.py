@@ -20,8 +20,8 @@ ser = serial.Serial(
     stopbits = serial.STOPBITS_ONE,
     )
 
-gpio_pin0 = 18
-gpio_pin1 = 19
+gpio_pin0 = 18 #right
+gpio_pin1 = 19 #left
 
 
 pi = pigpio.pi()
@@ -46,14 +46,33 @@ def servo_moving():
     left_deg_input =0
     right_deg_input = 0
     while True:
-        print("input Degree : ")
-        left_deg_input, right_deg_input=input().split()
-        left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
+        # print("input Degree : ")
+        # left_deg_input, right_deg_input=input().split()
+        # left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
         
+        left_deg_input, right_deg_input=10, 0
+        left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
         pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
         pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
-        time.sleep(1)
+        time.sleep(2)
 
+        left_deg_input, right_deg_input=0, 0
+        left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
+        pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
+        pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
+        time.sleep(2)
+
+        left_deg_input, right_deg_input=0, 10
+        left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
+        pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
+        pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
+        time.sleep(2)
+
+        left_deg_input, right_deg_input=0, 0
+        left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
+        pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
+        pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
+        time.sleep(2)
 
 pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(21)*10000))
 pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(15)*10000))
