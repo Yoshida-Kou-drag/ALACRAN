@@ -65,8 +65,7 @@ def animate_rotation():
     # noinspection PyUnusedLocal
     anim = animation.FuncAnimation(fig, visualize_rotation, fargs=[collection],
                                    init_func=partial(init_func, ax, collection),
-                                   frames=360, interval=1000 / 30, blit=True)
-
+                                   frames=360, interval=1000 / 30, blit=False, repeat=False,save_count=2000)
     plt.show()
 
 animate_rotation()

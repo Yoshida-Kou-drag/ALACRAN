@@ -29,7 +29,7 @@ class SimulationWorld():
         # collection = Line3DCollection(self.robots.final_robot.vectors, colors='k', linewidths=0.2, linestyles=':')
         ax.add_collection3d(collection)
         anim = animation.FuncAnimation(fig, self.one_step, fargs=(collection,ax),
-                                    frames=360, interval=1000 / 30,blit=True)
+                                    frames=360, interval=1000 / 30,blit=True, repeat=True)
         plt.show()
 
     
@@ -58,7 +58,7 @@ class Robot():
             init_param = parts_data[2]
             mesh_data =MeshAdj.mesh_location_zero(mesh_data,init_param)
             self.parts_add(parts_name,mesh_data)
-            self.init_rotation(parts_name, 90)
+            self.init_rotation(parts_name, -90)
 
 
     def parts_add(self,parts_name,mesh_data):
@@ -105,12 +105,12 @@ class Robot():
 
 
     def one_step(self,frame, ax,collection,scale):
-        self.parts_rotation("body",-20)
-        # print("frame",-30)
-        self.parts_rotation("left arm",20)
-        self.parts_rotation("right arm",-20)
+        # self.parts_rotation("body",-20)
+        print("frame",frame)
+        # self.parts_rotation("left arm",20)
+        # self.parts_rotation("right arm",-20)
         points = np.array(self.parts_center_point())
-        print("point=",points)
+        # print("point=",points)
         ax.clear()
         collection.set_verts(self.final_robot.vectors)
         collection.do_3d_projection(collection.axes.get_figure().canvas.get_renderer())
