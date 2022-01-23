@@ -45,7 +45,7 @@ def servo_moving():
     global left_deg_input,right_deg_input
     left_deg_input =0
     right_deg_input = 0
-    while True:
+    for i in range(2):
         # print("input Degree : ")
         # left_deg_input, right_deg_input=input().split()
         # left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
@@ -76,17 +76,24 @@ def servo_moving():
 
 pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(21)*10000))
 pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(15)*10000))
+time.sleep(2)
 
 thread1 = threading.Thread(target=read_posture)
 thread2 = threading.Thread(target=servo_moving)
 thread1.start()
 thread2.start()
 
-file = open("./data/robot_data.csv","w")
+file_name = "./data/robot_data_"+str(time.time())+".csv"
+file = open(file_name,"w")
 
 try :
     while True :
-        file.write(str(imu_data[0]) + "," + str(imu_data[1]) + "," + str(imu_data[2]) + "," + str(left_deg_input) + "," + str(right_deg_input) + "\n") 
+        if imu_data[1] < 0.5 and imu_data[2] < 0.5:
+            ptop_deg = 0
+        else :
+            ptop_deg = math.degrees(math.atan2(imu_data[1], imu_data[2]))
+        
+        file.write(str(imu_data[0]) + "," + str(imu_data[1]) + "," + str(imu_data[2]) + "," + str(left_deg_input) + "," + str(right_deg_input)+ "," + str(ptop_deg)  + "\n") 
         time.sleep(0.1)
 
 
@@ -99,12 +106,13 @@ except KeyboardInterrupt:
     pi.set_mode(gpio_pin1,pigpio.INPUT)
     pi.stop()
 
-    df = pd.read_csv('./data/robot_data.csv', names=['num1', 'num2','num3','num4','num5'])
+    df = pd.read_csv(file_name, names=['num1', 'num2','num3','num4','num5','num6'])
     plt.figure()
     plt.plot(df['num1'],df['num2'],label='roll')
     plt.plot(df['num1'],df['num3'],label= "pich")
     plt.plot(df['num1'],df['num4'],label= "left_deg")
     plt.plot(df['num1'],df['num5'],label= "right_deg")
+    plt.plot(df['num1'],df['num6'],label= "ptop deg")
     plt.legend()
     plt.show()
     
