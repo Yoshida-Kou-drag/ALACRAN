@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import math
 
 # df = pd.read_csv('robot_data.csv', names=['num1', 'num2','num3'])
-df = pd.read_csv('ptop_data.csv', names=['num1', 'num2','num3','num4','num5','num6'])
+df = pd.read_csv('robot_data_1642968176.97497.csv', names=['num1', 'num2','num3','num4','num5','num6'])
 # roll = np.array(df['num2'])
 # print(roll[0])
 # pitch = np.array(df['num3'])

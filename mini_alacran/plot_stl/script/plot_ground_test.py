@@ -129,11 +129,14 @@ class EstimateGround:
              
         if tilt*self.left_arm_range[0,0] > self.left_arm_range[1,1] : # 腕の接地点の範囲を超えたら y
             print("left arm ovar range")
-            b = self.left_arm_range[1,1]-tilt*self.left_arm_range[0,0]
             a = (self.body_range[0,1]-self.body_range[1,1])/(self.body_range[0,0]-self.body_range[1,0])
-            x = b/(a-tilt) 
+            # b = self.left_arm_range[1,1]-tilt*self.left_arm_range[0,0]
+            b = self.body_range[0,1]-a*self.body_range[0,0]
+            b2 = self.left_arm_range[1,1] - tilt*self.left_arm_range[1,0]
+            x = (b2-b)/(a-tilt)             
             y= a*x +b
             new_body_range.append([x,y,0])
+            print("#######",[x,y,0])
         else:
             b=0
             self.left_arm_range[1,1] = tilt*self.left_arm_range[0,0] # アームの有効範囲の更新
@@ -145,23 +148,23 @@ class EstimateGround:
 
             print("y=",a,"x +",b)
             a2 = tilt
-            b2 = self.left_arm_range[0,1]-a2*self.left_arm_range[0,0]
+            b2 = self.left_arm_range[0,1]-a2*self.left_arm_range[0,0] #  arm min の交点
+            b3 =self.left_arm_range[1,1] - tilt*self.left_arm_range[1,0] # arm maxの交点
 
             print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b2)/(a2-a))
+            print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b3)/(a2-a))
+            #交点がこの範囲で交わるなら
             if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b2)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]):
                     print("in range",i,i+1)
+                    print("##########",[(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
                     new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
-            else :
-                pass
-                # new_body_range.append(self.body_range[i])
             
-            b2 = 0
-            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b2)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]):
-                    print("in range",i,i+1)
-                    new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
+            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b3)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]) and i!=0:
+                    print("in range of arm max",i,i+1)
+                    print("###########", [(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
+                    new_body_range.append([(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
             else :
                 pass
-                # new_body_range.append(self.body_range[i])
         
         print("init body range is",self.body_range)
         print("new body range is",new_body_range)
