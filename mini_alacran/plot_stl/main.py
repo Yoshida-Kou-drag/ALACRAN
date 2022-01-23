@@ -63,7 +63,15 @@ line= mplot3d.art3d.Line3D(right_arm_range[0], right_arm_range[1].T,right_arm_ra
 ax.add_line(line)
 
 ####################### 計算後##############################
-estimate_ground.right_tilt_range(45)
+estimate_ground.right_tilt_range(44.13670419576012)
+estimate_ground.left_arm_estimate(10, 3.607347419164354)
+estimate_ground.left_tilt_range(-49.05478942680127)
+
+for i in range(1):
+    estimate_ground.right_arm_estimate(10, 1.4963403628093792)
+    estimate_ground.left_arm_estimate(10, 3.607347419164354)
+
+
 left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
 ax.add_collection3d(mplot3d.art3d.Poly3DCollection([body_range],alpha=1,color='red'))
 
@@ -71,6 +79,11 @@ line= mplot3d.art3d.Line3D(left_arm_range[0], left_arm_range[1].T,left_arm_range
 ax.add_line(line)
 line= mplot3d.art3d.Line3D(right_arm_range[0], right_arm_range[1].T,right_arm_range[2].T, linewidth=8, color='red')
 ax.add_line(line)
+
+
+
+
+
 
 
 scale = cube_comb.points.flatten()

@@ -1,4 +1,6 @@
+from cmath import sin
 import math
+from turtle import radians, tiltangle
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -9,7 +11,7 @@ class EstimateGround:
     def __init__(self) :
         self.plot_counter = 0
         
-        arm_ground_size = 88.5 #アーム接地長さ
+        self.arm_ground_size = 88.5 #アーム接地長さ
         arm_length = 126 # 実際のアームの長さ
         arm_width = 166.8 # アーム間の距離
 
@@ -22,10 +24,10 @@ class EstimateGround:
         body_to_gp = 58 # 重心とbodyの端の距離
 
         self.left_arm_range = np.array([[-arm_width/2, ax_roll_gp,0],                 # min
-                        [-arm_width/2, ax_roll_gp+arm_ground_size,0]])   # max
+                        [-arm_width/2, ax_roll_gp+self.arm_ground_size,0]])   # max
         
         self.right_arm_range = np.array([[arm_width/2, ax_roll_gp,0],                 # min
-                        [arm_width/2, ax_roll_gp+arm_ground_size,0]])    # max
+                        [arm_width/2, ax_roll_gp+self.arm_ground_size,0]])    # max
 
         self.min_deg = [ax_roll_gp/(-arm_width/2),
                    ax_roll_gp/(arm_width/2)]
@@ -87,8 +89,115 @@ class EstimateGround:
         print("new body range is",new_body_range)
         self.body_range = new_body_range
 
-        return
-        
 
+    def left_arm_estimate(self,servo_deg,pitch_deg):
+        self.body_range = np.array(self.body_range)
+        # l_body_max = self.left_arm_range[0,1] - min(self.body_range[:,1:2].T[0])
+        # l_body_min = self.left_arm_range[0,1] - max(self.body_range[:,1:2].T[0])
+        l_body_max = self.sim_calib[1] - min(self.body_range[:,1:2].T[0])
+        l_body_min = self.sim_calib[1] - max(self.body_range[:,1:2].T[0])
+        print("l body max is",l_body_max,l_body_min)
+        print("slice data is ",self.body_range[:,1:2].T[0])
+
+        arm_deg = servo_deg - pitch_deg
+        l_arm_max = l_body_max*math.sin(math.radians(pitch_deg))/math.sin(math.radians(arm_deg))
+        l_arm_min = l_body_min*math.sin(math.radians(pitch_deg))/math.sin(math.radians(arm_deg)) 
+        print("arm max is:",l_arm_max,l_arm_min)
+        print(len(self.body_range))        
+
+        if l_arm_max > self.left_arm_range[1,1]-self.sim_calib[1] : # アームの限界値を変えたとき
+            l_arm_max = self.left_arm_range[1,1]-self.sim_calib[1] # アームの最大値を代入
+            l_body_max = l_arm_max*math.sin(math.radians(arm_deg))/math.sin(math.radians(pitch_deg)) #逆算してbodyの範囲を小さくする
+
+            for i in range(len(self.body_range)-1) :
+                a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
+                b = self.body_range[i,1]-a*self.body_range[i,0]
+
+                if abs(self.body_range[i+1,1]) > abs(l_body_max-self.sim_calib[1]): # y軸の推定範囲を超えたら
+                    self.body_range[i+1,0] = (self.left_arm_range[0,1]-l_body_max-b) / a   # x
+                    self.body_range[i+1,1] = self.left_arm_range[0,1]-l_body_max         # y
+                else:
+                    pass
+        else :
+            self.left_arm_range[0,1] = self.sim_calib[1] + l_arm_min
+            self.left_arm_range[1,1] = self.sim_calib[1] + l_arm_max
+    
+    def left_tilt_range(self,degree):
+        tilt = math.tan(math.radians(degree))
+        print("tilt is ",tilt)
+        new_body_range = []
+             
+        if tilt*self.left_arm_range[0,0] > self.left_arm_range[1,1] : # 腕の接地点の範囲を超えたら y
+            print("left arm ovar range")
+            b = self.left_arm_range[1,1]-tilt*self.left_arm_range[0,0]
+            a = (self.body_range[0,1]-self.body_range[1,1])/(self.body_range[0,0]-self.body_range[1,0])
+            x = b/(a-tilt) 
+            y= a*x +b
+            new_body_range.append([x,y,0])
+        else:
+            b=0
+            self.left_arm_range[1,1] = tilt*self.left_arm_range[0,0] # アームの有効範囲の更新
+            new_body_range.append([0,0,0])
+        
+        for i in range(len(self.body_range)-1) :
+            a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
+            b = self.body_range[i,1]-a*self.body_range[i,0]
+
+            print("y=",a,"x +",b)
+            a2 = tilt
+            b2 = self.left_arm_range[0,1]-a2*self.left_arm_range[0,0]
+
+            print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b2)/(a2-a))
+            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b2)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]):
+                    print("in range",i,i+1)
+                    new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
+            else :
+                pass
+                # new_body_range.append(self.body_range[i])
+            
+            b2 = 0
+            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b2)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]):
+                    print("in range",i,i+1)
+                    new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
+            else :
+                pass
+                # new_body_range.append(self.body_range[i])
+        
+        print("init body range is",self.body_range)
+        print("new body range is",new_body_range)
+        self.body_range = new_body_range
+
+
+    def right_arm_estimate(self,servo_deg,pitch_deg):
+        self.body_range = np.array(self.body_range)
+        l_body_max = self.sim_calib[1] - min(self.body_range[:,1:2].T[0])
+        l_body_min = self.sim_calib[1] - max(self.body_range[:,1:2].T[0])
+        print("l body max is",l_body_max,l_body_min)
+        print("slice data is ",self.body_range[:,1:2].T[0])
+
+        arm_deg = servo_deg - pitch_deg
+        l_arm_max = l_body_max*math.sin(math.radians(pitch_deg))/math.sin(math.radians(arm_deg))
+        l_arm_min = l_body_min*math.sin(math.radians(pitch_deg))/math.sin(math.radians(arm_deg)) 
+        print("arm max is:",l_arm_max,l_arm_min)
+        print(len(self.body_range))        
+
+        if l_arm_max > self.right_arm_range[1:1]-self.sim_calib[1] : # アームの限界値を変えたとき
+            l_arm_max = self.right_arm_range[1:1]-self.sim_calib[1]# アームの最大値を代入
+            l_body_max = l_arm_max*math.sin(math.radians(arm_deg))/math.sin(math.radians(pitch_deg)) #逆算してbodyの範囲を小さくする
+
+            for i in range(len(self.body_range)-1) :
+                a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
+                b = self.body_range[i,1]-a*self.body_range[i,0]
+
+                if abs(self.body_range[i+1,1]) > abs(l_body_max - self.sim_calib[1]): # y軸の推定範囲を超えたら
+                    self.body_range[i+1,0] = (self.right_arm_range[0,1]-l_body_max-b) / a   # x
+                    self.body_range[i+1,1] = self.right_arm_range[0,1]-l_body_max         # y
+                else:
+                    pass
+        else :
+            self.right_arm_range[0,1] = self.sim_calib[1] + l_arm_min
+            self.right_arm_range[1,1] = self.sim_calib[1] + l_arm_max
+        
+        print("arm range is",self.right_arm_range)
         
 
