@@ -23,12 +23,14 @@ poll.register(fifo_read, select.POLLIN)
 
 
 #plot init 
-t = np.zeros(10)
-y = np.zeros(10)
+t = np.zeros(100)
+y = np.zeros(100)
+r = np.zeros(100)
 
 plt.ion()
 plt.figure()
 li, = plt.plot(t, y)
+li2, = plt.plot(t, r)
 # plt.ylim(0, 5)
 plt.xlabel("time[s]")
 plt.ylabel("angle")
@@ -50,8 +52,10 @@ while True: #web->STM
                 y = np.delete(y, 0)
                 li.set_xdata(t)
                 li.set_ydata(y)           
+                li2.set_xdata(t)
+                li2.set_ydata(r)           
                 plt.xlim(min(t), max(t))
-                plt.ylim(-45, 45)
+                plt.ylim(min(y)-5, max(y)+5)
 
                 plt.pause(0.01)
 
