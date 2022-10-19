@@ -144,8 +144,8 @@ class IMU:
 if __name__ == "__main__":
     imu = IMU()
     ser = serial.Serial(
-        port = "/dev/ttyACM0",  #Linux
-        # port = 'COM4',            #Windows
+        # port = "/dev/ttyACM0",  #Linux
+        port = 'COM6',            #Windows
         baudrate = 57600,
         parity = serial.PARITY_NONE,
         bytesize = serial.EIGHTBITS,
