@@ -128,6 +128,7 @@ class EstimateGround:
     
     def left_tilt_range(self,degree):
         tilt = math.tan(math.radians(degree))
+        self.body_range = np.array(self.body_range) #numpy化
         print("tilt is ",tilt)
         new_body_range = []
              
