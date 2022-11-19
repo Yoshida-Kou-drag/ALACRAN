@@ -69,7 +69,7 @@ class EstimateGround:
         if abs((self.body_range[2,1] - b) / tilt) < abs(self.body_range[2,0]) : # xが限界を超えていなければ
             print("y max",self.body_range[2,1])
             new_body_range.append([(self.body_range[2,0]-b)/tilt, self.body_range[2,1], 0])
-        elif abs(self.body_range[1,0]*tilt + b) < abs(self.body_range[2,1]): # yがげんかいをかえてなければ
+        elif abs(self.body_range[1,0]*tilt + b) < abs(self.body_range[2,1]): # yが限界を超えていなければ
             print("x max",self.body_range[1,0]*tilt, abs(self.body_range[2,1]))
             new_body_range.append([self.body_range[1,0],self.body_range[1,0]*tilt+b,0])
 
@@ -115,6 +115,7 @@ class EstimateGround:
             for i in range(len(self.body_range)-1) :
                 a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
                 b = self.body_range[i,1]-a*self.body_range[i,0]
+                print("a=",a)
 
                 if abs(self.body_range[i+1,1]) > abs(l_body_max-self.sim_calib[1]): # y軸の推定範囲を超えたら
                     self.body_range[i+1,0] = (self.left_arm_range[0,1]-l_body_max-b) / a   # x
@@ -122,8 +123,8 @@ class EstimateGround:
                 else:
                     pass
         else :
-            self.left_arm_range[0,1] = self.sim_calib[1] + l_arm_min
-            self.left_arm_range[1,1] = self.sim_calib[1] + l_arm_max
+            self.left_arm_range[0,1] = l_arm_min + self.sim_calib[1] 
+            self.left_arm_range[1,1] = l_arm_max + self.sim_calib[1]
             print("left_arm_range is :",self.left_arm_range)
     
     def left_tilt_range(self,degree):

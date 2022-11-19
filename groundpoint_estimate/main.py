@@ -74,8 +74,8 @@ ax.add_line(line)
 ####################### 計算後##############################
 estimate_ground.right_tilt_range(45)
 estimate_ground.left_arm_estimate(10,  3.607347419164354)
-estimate_ground.left_tilt_range(-66.571307191255)
-estimate_ground.right_arm_estimate(10, 1.4963403628093792)
+# estimate_ground.left_tilt_range(-66.571307191255)
+# estimate_ground.right_arm_estimate(10, 1.4963403628093792)
 
 
 # 60.86700527636417
@@ -126,5 +126,8 @@ ax.scatter(left_arm_ground_pos[0], 70, 0, s = 100, c = "blue")
 ax.scatter(right_arm_ground_pos[0], 20, 0, s = 100, c = "blue")
 ax.scatter(-100+right_arm_ground_pos[0], -80, 0, s = 100, c = "blue")
 
+pyplot.minorticks_on()
+ax.grid(which="major",alpha=0.9)
+ax.grid(which="minor",alpha=0.3)
 
 pyplot.show()

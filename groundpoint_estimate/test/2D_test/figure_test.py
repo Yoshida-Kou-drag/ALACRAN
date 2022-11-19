@@ -16,6 +16,7 @@ def alacran_model(ax):
     body = patches.Rectangle(xy=(-69, -128), width=138, height=150, ec='#000000', fill=False)
     left_arm = patches.Rectangle(xy=(-90, -20), width=13.2, height=126, ec='#000000', fill=False)
     right_arm = patches.Rectangle(xy=(76.8, -20), width=13.2, height=126, ec='#000000', fill=False)
+    plt.plot(0, -36, marker='o', markersize=10, color='#000000') #　円
     ax.add_patch(body)
     ax.add_patch(left_arm)
     ax.add_patch(right_arm)
