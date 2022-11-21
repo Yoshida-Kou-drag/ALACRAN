@@ -8,7 +8,7 @@ from matplotlib import pyplot
 import sys
 sys.path.append('./script/')
 from rotation_matrix import RotationMatrix
-from plot_ground_test import EstimateGround
+from estimate_ground import EstimateGround
 from mesh_adj import MeshAdj
 
 

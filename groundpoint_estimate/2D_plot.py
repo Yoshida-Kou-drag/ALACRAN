@@ -5,8 +5,7 @@ import numpy as np
 import sys
 
 sys.path.append('./script/')
-from rotation_matrix import RotationMatrix
-from plot_ground_test import EstimateGround
+from estimate_ground import EstimateGround
 from mesh_adj import MeshAdj
 
 def setting_graph(ax):
@@ -46,7 +45,7 @@ def ground_point(debug=True):
     plt.plot(body_ground[0], body_ground[1], marker='o', markersize=20, color='blue', alpha = 0.5) #　円
 
 
-def init_line():
+def init_line(debug = False):
 
     left_arm_range = np.array([[-83.4 ,0] ,[-83.4 ,88.5]]) 
     
@@ -62,9 +61,11 @@ def init_line():
     plt.plot(right_arm_range[:,:1], right_arm_range[:,1:3],color="green",alpha=0.5)
     patch = patches.Polygon(xy=body_range[:,:2], closed=True,alpha=0.5)
     ax.add_patch(patch)
-    print("left_arm_range",left_arm_range[:,:1], left_arm_range[:,1:3])
-    print("right_arm_range",right_arm_range[:,:1], right_arm_range[:,1:3])
-    print("body ",body_range[:,:2])
+
+    if debug:
+        print("left_arm_range",left_arm_range[:,:1], left_arm_range[:,1:3])
+        print("right_arm_range",right_arm_range[:,:1], right_arm_range[:,1:3])
+        print("body ",body_range[:,:2])
 
 def estimate_plot(left_arm_range,right_arm_range,body_range,gp):
     plt.plot(left_arm_range[0], left_arm_range[1],linewidth=4,color="red")
@@ -82,8 +83,9 @@ if __name__ == "__main__":
     ####################### 計算後##############################
     estimate_ground.right_tilt_range(45)
     estimate_ground.left_arm_estimate(10,  4.665821)
-    # estimate_ground.left_tilt_range(-65.99499623269556)
-    # estimate_ground.right_arm_estimate(10, 2)
+    estimate_ground.left_tilt_range(-65.99499623269556)
+    estimate_ground.right_arm_estimate(10, 2)
+    # estimate_ground.right_tilt_range2(45,True)
     
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     
