@@ -33,16 +33,17 @@ def ground_point(debug=True):
     la_ground=[-83.4, 70]
     ra_ground=[83.4, 20]
     body_ground = [-16.6,-80]
+    point_size = 10
     tilt_la_to_body = (la_ground[1]-body_ground[1])/(la_ground[0]-body_ground[0])
     tilt_ra_to_body = (ra_ground[1]-body_ground[1])/(ra_ground[0]-body_ground[0])
     if debug:
         print("Tilt",math.degrees(math.atan(tilt_la_to_body)),math.degrees(math.atan(tilt_ra_to_body)))
 
-    plt.plot([la_ground[0],body_ground[0]], [la_ground[1],body_ground[1]],color="red",alpha=0.5)
-    plt.plot([ra_ground[0],body_ground[0]], [ra_ground[1],body_ground[1]],color="red",alpha=0.5)
-    plt.plot(la_ground[0],la_ground[1], marker='o', markersize=20, color='blue', alpha = 0.5) #　円
-    plt.plot(ra_ground[0], ra_ground[1], marker='o', markersize=20, color='blue', alpha = 0.5) #　円
-    plt.plot(body_ground[0], body_ground[1], marker='o', markersize=20, color='blue', alpha = 0.5) #　円
+    plt.plot([la_ground[0],body_ground[0]], [la_ground[1],body_ground[1]],color="red",alpha=0.5) #line
+    plt.plot([ra_ground[0],body_ground[0]], [ra_ground[1],body_ground[1]],color="red",alpha=0.5) #line
+    plt.plot(la_ground[0],la_ground[1], marker='o', markersize=point_size, color='blue', alpha = 0.5) #　円
+    plt.plot(ra_ground[0], ra_ground[1], marker='o', markersize=point_size, color='blue', alpha = 0.5) #　円
+    plt.plot(body_ground[0], body_ground[1], marker='o', markersize=point_size, color='blue', alpha = 0.5) #　円
 
 
 def init_line(debug = False):
@@ -85,8 +86,11 @@ if __name__ == "__main__":
     estimate_ground.left_arm_estimate(10,  4.665821)
     estimate_ground.left_tilt_range(-65.99499623269556)
     estimate_ground.right_arm_estimate(10, 2)
-    # estimate_ground.right_tilt_range2(45,True)
-    
+    estimate_ground.right_tilt_range2(45,True)
+    estimate_ground.left_arm_estimate(10,  4.665821)
+    estimate_ground.sort_list()
+    estimate_ground.left_tilt_range(-65.99499623269556)
+
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     
 

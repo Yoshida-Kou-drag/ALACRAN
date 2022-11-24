@@ -54,6 +54,11 @@ class EstimateGround:
 
         return left_arm_range.T,right_arm_range.T,body_range,[0,-36,0]
     
+    def sort_list(self):
+        self.body_range[1,0],self.body_range[2,0] = self.body_range[2,0],self.body_range[1,0]
+        self.body_range[1,1],self.body_range[2,1] = self.body_range[2,1],self.body_range[1,1]
+        print("debug",self.body_range)
+    
     def right_tilt_range(self,degree,debug=False): # 右側の傾きから有効範囲を計算
         print("左腕を曲げたとき右腕とボディの推定")
         tilt = math.tan(math.radians(degree)) #傾きの計算
@@ -126,11 +131,9 @@ class EstimateGround:
                 if i == 0:
                     new_body_range.append(self.body_range[i])
                 if abs(self.body_range[i+1,1]) > abs(l_body_max-self.sim_calib[1]): # y軸の推定範囲を超えたら
-                    print("IIINNNN")
                     x_range=[self.body_range[i,0],self.body_range[i+1,0]]
                     a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
                     b = self.body_range[i,1]-a*self.body_range[i,0]
-                    print("a=",a)
                     if max(x_range)>= (self.left_arm_range[0,1]-l_body_max-b) / a >= min(x_range):
                         new_body_range.append([(self.left_arm_range[0,1]-l_body_max-b) / a, self.left_arm_range[0,1]-l_body_max, 0])
                         # self.body_range[i+1,0] = (self.left_arm_range[0,1]-l_body_max-b) / a   # x
@@ -139,7 +142,6 @@ class EstimateGround:
                     x_range=[self.body_range[i+1,0],self.body_range[i+2,0]]
                     a = (self.body_range[i+2,1]-self.body_range[i+1,1])/(self.body_range[i+2,0]-self.body_range[i+1,0])
                     b = self.body_range[i+1,1]-a*self.body_range[i+1,0]
-                    print("a=",a)
                     if max(x_range)>=(self.left_arm_range[0,1]-l_body_max-b) / a >= min(x_range):
                         new_body_range.append([(self.left_arm_range[0,1]-l_body_max-b) / a, self.left_arm_range[0,1]-l_body_max, 0])
                         # self.body_range[i+1,0] = (self.left_arm_range[0,1]-l_body_max-b) / a   # x
@@ -292,13 +294,15 @@ class EstimateGround:
         if debug : print("arm range is",self.right_arm_range)
         
     def right_tilt_range2(self,degree,debug=False):
+        print()
         print("2回目の左腕を曲げたときの右腕とボディの推定")
+        print()
         tilt = math.tan(math.radians(degree))
         self.body_range = np.array(self.body_range) #numpy化
         new_body_range = []
         body_range_len =(len(self.body_range))# ボディ推定配列の長さ
              
-        if tilt*self.right_arm_range[0,0] > self.right_arm_range[1,1] : # 腕の接地点の範囲を超えたら y
+        if tilt*self.right_arm_range[0,0]+max(self.body_range[:,1:2].T[0])> self.right_arm_range[1,1] : # 腕の接地点の範囲を超えたら y
             print("left arm ovar range")
             a = (self.body_range[0,1]-self.body_range[body_range_len-1,1])/(self.body_range[0,0]-self.body_range[body_range_len-1,0])
             # b = self.left_arm_range[1,1]-tilt*self.left_arm_range[0,0]
@@ -310,32 +314,41 @@ class EstimateGround:
         else:
             pass
 
-        for i in range(len(self.body_range)-1) :
-            a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
-            b = self.body_range[i,1]-a*self.body_range[i,0]
+        for i in range(len(self.body_range)) :
+            if i < len(self.body_range)-1:
+                a = (self.body_range[i+1,1]-self.body_range[i,1])/(self.body_range[i+1,0]-self.body_range[i,0])
+                b = self.body_range[i,1]-a*self.body_range[i,0]
+                x_range = [min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]])] 
+            else:
+                a = (self.body_range[0,1]-self.body_range[i,1])/(self.body_range[0,0]-self.body_range[i,0])
+                b = self.body_range[i,1]-a*self.body_range[i,0]
+                x_range = [min([self.body_range[i,0],self.body_range[0,0]]),max([self.body_range[i,0],self.body_range[0,0]])] 
 
             a2 = tilt
             b2 = self.right_arm_range[0,1]- a2*self.right_arm_range[0,0] #  arm min の交点
             b3 =self.right_arm_range[1,1] - a2*self.right_arm_range[1,0] # arm maxの交点
 
             if debug:
+                print("i=",i)
+                print("body range len",len(self.body_range-1))
                 print("y=",a,"x +",b)
-                print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b2)/(a2-a))
-                print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b3)/(a2-a))
+                print("range is", x_range, (b-b2)/(a2-a),(b-b3)/(a2-a))
             
             #交点がこの範囲で交わるなら
-            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b2)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]):
+            if min([((b-b2)/(a2-a)),((b-b3)/(a2-a))]) <= self.body_range[i,0] <= max([((b-b2)/(a2-a)),((b-b3)/(a2-a))]):
+                new_body_range.append(self.body_range[i])
+
+            if x_range[0] <= ((b-b2)/(a2-a)) <= x_range[1]:
                     print("in range",i,i+1)
                     print("##########",[(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
                     new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
             
-            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b3)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]) and i!=0:
+            if x_range[0] <= ((b-b3)/(a2-a)) <= x_range[1]:
                     print("in range of arm max",i,i+1)
                     print("###########", [(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
                     new_body_range.append([(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
             
-            if min([((b-b2)/(a2-a)),((b-b3)/(a2-a))]) <= self.body_range[i+1,0] <= max([((b-b2)/(a2-a)),((b-b3)/(a2-a))]):
-                new_body_range.append(self.body_range[i+1])
+            
         
         if debug:
             print("tilt is ",tilt)
