@@ -5,7 +5,7 @@ import numpy as np
 import sys
 
 sys.path.append('./script/')
-from estimate_ground import EstimateGround
+from plot_ground_test import EstimateGround
 from mesh_adj import MeshAdj
 
 def setting_graph(ax):
@@ -77,8 +77,8 @@ def estimate_plot(id,left_arm_range,right_arm_range,body_range,gp):
 if __name__ == "__main__":
     fig = plt.figure(figsize=[8,8])
     ax = plt.axes()
-    setting_graph(ax)
 
+    setting_graph(ax)
     alacran_model(ax)
     ground_point()
     init_line()
@@ -91,25 +91,15 @@ if __name__ == "__main__":
     # estimate_plot(0.2,left_arm_range,right_arm_range,body_range,gp)
     estimate_ground.left_arm_estimate(10,  4.665821)
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.3,left_arm_range,right_arm_range,body_range,gp)
+    # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
     estimate_ground.left_tilt_range(-65.99499623269556)
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
+    # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
     estimate_ground.right_arm_estimate(10, 2)
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.right_tilt_range2(45,True)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_arm_estimate(10,  4.665821)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.sort_list()
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_tilt_range(-65.99499623269556)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     estimate_plot(1,left_arm_range,right_arm_range,body_range,gp)
+
+    
 
     
     plt.show()
