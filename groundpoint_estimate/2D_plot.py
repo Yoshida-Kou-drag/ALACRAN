@@ -5,6 +5,7 @@ import numpy as np
 import sys
 
 sys.path.append('./script/')
+from ideal_value_calc import ideal_val_calc
 from estimate_ground import EstimateGround
 from mesh_adj import MeshAdj
 
@@ -29,10 +30,7 @@ def alacran_model(ax):
     ax.add_patch(left_arm)
     ax.add_patch(right_arm)
 
-def ground_point(debug=True):
-    la_ground=[-83.4, 70]
-    ra_ground=[83.4, 20]
-    body_ground = [-16.6,-80]
+def ground_point(la_ground,ra_ground,body_ground,debug=True):
     point_size = 10
     tilt_la_to_body = (la_ground[1]-body_ground[1])/(la_ground[0]-body_ground[0])
     tilt_ra_to_body = (ra_ground[1]-body_ground[1])/(ra_ground[0]-body_ground[0])
@@ -79,35 +77,42 @@ if __name__ == "__main__":
     ax = plt.axes()
     setting_graph(ax)
 
+    la_ground=[-83.4, 20]
+    ra_ground=[83.4, 20]
+    body_ground = [-16.6,-80]
+    left_tilt,right_tilt,left_pitch,right_pitch = ideal_val_calc(la_ground,ra_ground,body_ground)
+
     alacran_model(ax)
-    ground_point()
+    ground_point(la_ground,ra_ground,body_ground)
     init_line()
 
     estimate_ground = EstimateGround()
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     ####################### 計算後##############################
-    estimate_ground.right_tilt_range(45)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    estimate_ground.right_tilt_range(right_tilt)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.2,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_arm_estimate(10,  4.665821)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    estimate_ground.left_arm_estimate(10,  left_pitch)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.3,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_tilt_range(-65.99499623269556)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    estimate_ground.left_tilt_range(left_tilt)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.right_arm_estimate(10, 2)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    estimate_ground.right_arm_estimate(10, right_pitch)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.right_tilt_range2(45,True)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    estimate_ground.right_tilt_range2(right_tilt,True)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_arm_estimate(10,  4.665821)
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    # estimate_ground.sort_list()
+
+    estimate_ground.left_arm_estimate(10,  left_pitch)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.sort_list()
-    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    # estimate_ground.sort_list()
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_tilt_range(-65.99499623269556)
+    # estimate_ground.left_tilt_range(left_tilt)
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     estimate_plot(1,left_arm_range,right_arm_range,body_range,gp)
 
