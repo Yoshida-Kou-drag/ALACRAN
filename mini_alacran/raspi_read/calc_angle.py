@@ -138,6 +138,7 @@ class IMU:
             print("filtering roll",filter_roll)
             print("filtering pitch",filter_pitch)
             print(" ")
+            print("\033[18A",end="")
     
         return [time_stamp, filter_roll, filter_pitch]
 
