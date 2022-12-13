@@ -112,10 +112,10 @@ if __name__ == "__main__":
     estimate_ground.left_arm_estimate(10,  left_pitch)
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    # estimate_ground.sort_list()
+    estimate_ground.sort_list()
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    # estimate_ground.left_tilt_range(left_tilt)
+    estimate_ground.left_tilt_range(left_tilt)
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     estimate_plot(1,left_arm_range,right_arm_range,body_range,gp)
 
