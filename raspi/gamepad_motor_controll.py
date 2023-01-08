@@ -21,6 +21,17 @@ for id in range(len(idx)):
     hoge = aaa.setRam(idx[id], 0, "DesiredVelosity")
     time.sleep(0.01)
 
+
+print(aaa.setMode(4,"FREE"))
+time.sleep(0.01)
+
+print(aaa.setMode(4,"TORQUE"))
+time.sleep(0.01)
+
+hoge = aaa.setRam(4, 1000, "DesiredTorque")
+time.sleep(0.01)
+
+
 ################maxon motor初期化###############
 pwm_left = 19
 pwm_right = 18
@@ -91,6 +102,14 @@ def main():
 
                         hoge = aaa.setRam(idx[id], 0, "DesiredVelosity")
                         time.sleep(0.01)
+                    
+                    print(aaa.setMode(4,"FREE"))
+                    time.sleep(0.01)
+                    print(aaa.setMode(4,"TORQUE"))
+                    time.sleep(0.01)
+                    hoge = aaa.setRam(4, 1000, "DesiredTorque")
+                    time.sleep(0.01)
+
                 elif joystick.get_button(2) :
                     ctr_mode=3
                     print("turbo_mode")
@@ -132,10 +151,22 @@ def main():
 
 
             elif ctr_mode ==2: #フリッパー操作モード
+                tail =5000*(map_axis_t(joystick.get_axis(5)) - map_axis_t(joystick.get_axis(2)))
                 flipperL = -map_axis(joystick.get_axis(1))
                 flipperR = -map_axis(joystick.get_axis(4)) 
                 print(flipperL,flipperR)
+
+                if tail>=10:
+                    hoge = aaa.setRam(idx[2], 10000, "DesiredVelosity")
+                    time.sleep(0.01)
+                elif tail<-10:
+                    hoge = aaa.setRam(idx[2], -10000, "DesiredVelosity")
+                    time.sleep(0.01)
+                else:
+                    hoge = aaa.setRam(idx[2], 0, "DesiredVelosity")
+                    time.sleep(0.01)
                 
+
                 if flipperL >50:
                     print("LUP")
                     hoge = aaa.setRam(idx[0], -20000, "DesiredVelosity")
