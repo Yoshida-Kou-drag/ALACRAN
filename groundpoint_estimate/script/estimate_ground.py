@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d.art3d as art3d
 from pandas import array
+import gift_wrap
 
 class EstimateGround:
     def __init__(self) :
@@ -55,9 +56,15 @@ class EstimateGround:
         return left_arm_range.T,right_arm_range.T,body_range,[0,-36,0]
     
     def sort_list(self):
-        self.body_range[1,0],self.body_range[2,0] = self.body_range[2,0],self.body_range[1,0]
-        self.body_range[1,1],self.body_range[2,1] = self.body_range[2,1],self.body_range[1,1]
-        print("debug",self.body_range)
+        ps = []
+        for i in range(len(self.body_range)):
+            ps.append([self.body_range[i][0], self.body_range[i][1], self.body_range[i][2]])
+        print("before",ps)
+        self.body_range=gift_wrap.wrap(ps)
+        print("after",self.body_range)
+        # self.body_range[1,0],self.body_range[2,0] = self.body_range[2,0],self.body_range[1,0]
+        # self.body_range[1,1],self.body_range[2,1] = self.body_range[2,1],self.body_range[1,1]
+        # print("debug",self.body_range)
     
     def right_tilt_range(self,degree,debug=False): # 右側の傾きから有効範囲を計算
         print("左腕を曲げたとき右腕とボディの推定")
