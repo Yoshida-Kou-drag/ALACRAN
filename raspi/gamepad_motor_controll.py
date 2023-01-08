@@ -9,7 +9,7 @@ import pigpio
 aaa = b3mCtrl.B3mClass()
 aaa.begin("/dev/ttyUSB0",1500000)
 
-idx= [1,2]
+idx= [1,2,3]
 
 for id in range(len(idx)):
     print(aaa.setMode(idx[id],"FREE"))
@@ -91,9 +91,12 @@ def main():
 
                         hoge = aaa.setRam(idx[id], 0, "DesiredVelosity")
                         time.sleep(0.01)
+                elif joystick.get_button(2) :
+                    ctr_mode=3
+                    print("turbo_mode")
 
 
-            if ctr_mode == 1:
+            if ctr_mode == 1: #走行モード
                 FB_val =map_axis_t(joystick.get_axis(5)) - map_axis_t(joystick.get_axis(2))
                 Lmotor_val = (FB_val) * 5000
                 Rmotor_val = (FB_val) * 5000
@@ -128,7 +131,7 @@ def main():
                 print(pi.read(DIRpin_left),abs(Lmotor_val),abs(Rmotor_val))
 
 
-            elif ctr_mode ==2:
+            elif ctr_mode ==2: #フリッパー操作モード
                 flipperL = -map_axis(joystick.get_axis(1))
                 flipperR = -map_axis(joystick.get_axis(4)) 
                 print(flipperL,flipperR)
@@ -160,6 +163,40 @@ def main():
                     hoge = aaa.setRam(idx[1], 0, "DesiredVelosity")
                     time.sleep(0.01)
 
+            elif ctr_mode ==3: #ターボ走行モード
+                FB_val =map_axis_t(joystick.get_axis(5)) - map_axis_t(joystick.get_axis(2))
+                Lmotor_val = (FB_val) * 5000*2
+                Rmotor_val = (FB_val) * 5000*2
+
+                if FB_val>=10:
+                    if map_axis(joystick.get_axis(0))>=0:
+                        Rmotor_val -= map_axis(joystick.get_axis(0))*3000
+                    else:
+                        Lmotor_val += map_axis(joystick.get_axis(0))*3000
+                    # print(FB_val,Lmotor_val,Rmotor_val)
+                elif FB_val<-10:
+                    if map_axis(joystick.get_axis(0))>=0:
+                        Rmotor_val += map_axis(joystick.get_axis(0))*3000
+                    else:
+                        Lmotor_val -= map_axis(joystick.get_axis(0))*3000
+                    # print(FB_val,Lmotor_val,Rmotor_val)
+                else:
+                    Lmotor_val -= map_axis(joystick.get_axis(0))*3000
+                    Rmotor_val += map_axis(joystick.get_axis(0))*3000
+                
+                if Lmotor_val >= 0:
+                    pi.write(DIRpin_left, 0)
+                elif Lmotor_val < 0:
+                    pi.write(DIRpin_left, 1)
+                if Rmotor_val >= 0:  
+                    pi.write(DIRpin_right, 0)
+                elif Rmotor_val < 0:  
+                    pi.write(DIRpin_right, 1)
+
+                pi.hardware_PWM(pwm_left,10000,abs(int(Lmotor_val)))
+                pi.hardware_PWM(pwm_right,10000,abs(int(Rmotor_val)))
+                print(pi.read(DIRpin_left),abs(Lmotor_val),abs(Rmotor_val))
+                
 
             # gamepad_data = {
             #     "joy_lx": map_axis(joystick.get_axis(0)),
