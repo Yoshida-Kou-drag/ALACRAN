@@ -35,7 +35,9 @@ def zero_calib(imu_data,calib_data):
     for i in range(100):
         roll.append(float(imu_data[1]))
         pitch.append(float(imu_data[2]))
+        print(roll[i])
         time.sleep(0.01)
+        
     calib_data[0] = np.mean(roll)
     calib_data[1] = np.mean(pitch)
     print(calib_data[0],calib_data[1])
@@ -77,8 +79,8 @@ def plot_imu(imu_data,calib_data):
         plt.ylim(min(min(roll),min(pitch))-5, max(max(roll),max(pitch))+5)
         # plt.ylim(-30, 30)
 
-        print("roll pitch:"+str(float(imu_data[1])-calib_data[0])+str(float(imu_data[2])-calib_data[1]))
-        print("\033[1A",end="")
+        # print("roll pitch:"+str(float(imu_data[1])-calib_data[0])+str(float(imu_data[2])-calib_data[1]))
+        # print("\033[1A",end="")
 
         plt.pause(0.01)
 
