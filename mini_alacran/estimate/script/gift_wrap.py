@@ -15,7 +15,7 @@ def wrap(ps):
   qs = []
   # 最初の点
   y = [p[1] for p in ps]
-  min_i = y.index(min(y))
+  min_i = y.index(max(y))
   qs.append(ps[min_i]) # xが最小になる点をqs[0]とする。
   # 各点
   n = -1

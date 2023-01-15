@@ -55,12 +55,13 @@ class EstimateGround:
 
         return left_arm_range.T,right_arm_range.T,body_range,[0,-36,0]
     
-    def sort_list(self):
+    def sort_list(self,debug=False):
         ps = []
         for i in range(len(self.body_range)):
             ps.append([self.body_range[i][0], self.body_range[i][1], self.body_range[i][2]])
         self.body_range=gift_wrap.wrap(ps)
-        i
+        if debug:
+            print("sort body range",self.body_range)
     
     def right_tilt_range(self,degree,debug=False): # 右側の傾きから有効範囲を計算
         print("左腕を曲げたとき右腕とボディの推定")
@@ -219,22 +220,24 @@ class EstimateGround:
 
             if debug:
                 print("y=",a,"x +",b)
+                print("a2,b3,b3",a2,b2,b3)
                 print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b2)/(a2-a))
                 print("range is",min([self.body_range[i,0],self.body_range[i+1,0]]),max([self.body_range[i,0],self.body_range[i+1,0]]), (b-b3)/(a2-a))
             
             #交点がこの範囲で交わるなら
-            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b2)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]):
-                    # print("in range",i,i+1)
-                    # print("##########",[(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
-                    new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
-            
-            if min([self.body_range[i,0],self.body_range[i+1,0]]) < ((b-b3)/(a2-a)) < max([self.body_range[i,0],self.body_range[i+1,0]]) and i!=0:
-                    # print("in range of arm max",i,i+1)
-                    # print("###########", [(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
-                    new_body_range.append([(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
-            
-            if min([((b-b2)/(a2-a)),((b-b3)/(a2-a))]) <= self.body_range[i+1,0] <= max([((b-b2)/(a2-a)),((b-b3)/(a2-a))]):
-                new_body_range.append(self.body_range[i+1])
+            if a2-a != 0 :
+                if min([self.body_range[i,0],self.body_range[i+1,0]]) <= ((b-b2)/(a2-a)) <= max([self.body_range[i,0],self.body_range[i+1,0]]):
+                        # print("in range",i,i+1)
+                        # print("##########",[(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
+                        new_body_range.append([(b-b2)/(a2-a),(b-b2)/(a2-a)*a2+b2,0])
+                
+                if min([self.body_range[i,0],self.body_range[i+1,0]]) <= ((b-b3)/(a2-a)) <= max([self.body_range[i,0],self.body_range[i+1,0]]) and i!=0:
+                        # print("in range of arm max",i,i+1)
+                        # print("###########", [(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
+                        new_body_range.append([(b-b3)/(a2-a),(b-b3)/(a2-a)*a2+b3,0])
+                
+                if min([((b-b2)/(a2-a)),((b-b3)/(a2-a))]) <= self.body_range[i+1,0] <= max([((b-b2)/(a2-a)),((b-b3)/(a2-a))]):
+                    new_body_range.append(self.body_range[i+1])
         
         if debug:
             print("tilt is ",tilt)

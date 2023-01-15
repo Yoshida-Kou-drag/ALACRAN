@@ -66,6 +66,10 @@ def init_line(ax,debug = False):
         print("body ",body_range[:,:2])
 
 def estimate_plot(ax,id,left_arm_range,right_arm_range,body_range,gp):
+    print("estimate result :")
+    print("body range",body_range)
+    print("left arm range",left_arm_range)
+    print("right arm range",right_arm_range)
     plt.plot(left_arm_range[0], left_arm_range[1],linewidth=4,color="blue",alpha=id)
     plt.plot(right_arm_range[0], right_arm_range[1],linewidth=4,color="blue",alpha=id)
     patch = patches.Polygon(xy=body_range[:,:2], closed=True,alpha=id)
@@ -78,9 +82,10 @@ def estimate_main(left_tilt,right_tilt,left_pitch,right_pitch):
     ax = plt.axes()
     setting_graph(ax)
 
-    la_ground=[-83.4, 70]
+    la_ground=[-83.4, 30]
     ra_ground=[83.4, 70]
-    body_ground = [-16.6,-80]
+    # body_ground = [-16.6,-80]
+    body_ground = [35,-80]
 
 
     #テスト環境ではこれを使う
@@ -117,9 +122,10 @@ def estimate_main(left_tilt,right_tilt,left_pitch,right_pitch):
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
     estimate_ground.sort_list()
-    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_tilt_range(left_tilt)
+    left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    estimate_plot(ax,0.6,left_arm_range,right_arm_range,body_range,gp)
+    
+    estimate_ground.left_tilt_range(left_tilt,False)
     estimate_ground.sort_list()
     
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
@@ -130,8 +136,11 @@ def estimate_main(left_tilt,right_tilt,left_pitch,right_pitch):
 
 
 if __name__ == "__main__":
-    la_ground=[-83.4, 70]
-    ra_ground=[83.4, 20]
-    body_ground = [-16.6,-80]
-    left_tilt,right_tilt,left_pitch,right_pitch = ideal_val_calc(la_ground,ra_ground,body_ground)
+    la_ground=[-83.4, 30]
+    ra_ground=[83.4, 70]
+    body_ground = [35,-80]
+
+    # left_tilt,right_tilt,left_pitch,right_pitch = ideal_val_calc(la_ground,ra_ground,body_ground)
+    # print(left_tilt,right_tilt,left_pitch,right_pitch)
+    left_tilt,right_tilt,left_pitch,right_pitch = -42.155118176585205 ,71.25656355144282, 2.4891779627645367 ,4.9621871744953445 
     estimate_main(left_tilt,right_tilt,left_pitch,right_pitch)
