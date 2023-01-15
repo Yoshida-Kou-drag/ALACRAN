@@ -33,8 +33,8 @@ def line():
                         [69 ,-109.25 ],
                         [69 ,-65.78417266]]) 
     
-    plt.plot(left_arm_range[:,:1], left_arm_range[:,1:2],color="green")
-    plt.plot(right_arm_range[:,:1], right_arm_range[:,1:3],color="green")
+    plt.plot(left_arm_range[:,:1], left_arm_range[:,1:2], linewidth=4, color="green")
+    plt.plot(right_arm_range[:,:1], right_arm_range[:,1:3], linewidth=4,color="green")
     patch = patches.Polygon(xy=body_range[:,:2], closed=True)
     ax.add_patch(patch)
     print("left_arm_range",left_arm_range[:,:1], left_arm_range[:,1:3])

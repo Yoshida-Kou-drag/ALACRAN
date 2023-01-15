@@ -79,7 +79,7 @@ def estimate_main(left_tilt,right_tilt,left_pitch,right_pitch):
     setting_graph(ax)
 
     la_ground=[-83.4, 70]
-    ra_ground=[83.4, 20]
+    ra_ground=[83.4, 70]
     body_ground = [-16.6,-80]
 
 
@@ -98,29 +98,30 @@ def estimate_main(left_tilt,right_tilt,left_pitch,right_pitch):
     estimate_ground.right_tilt_range(right_tilt)
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.2,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.left_arm_estimate(5,  left_pitch)
+    estimate_ground.left_arm_estimate(10,  left_pitch)
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.3,left_arm_range,right_arm_range,body_range,gp)
     estimate_ground.left_tilt_range(left_tilt)
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    estimate_ground.right_arm_estimate(5, right_pitch)
+    estimate_ground.right_arm_estimate(10, right_pitch)
     # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
     
-    # ####################### 2回目 ##############################
-    # estimate_ground.right_tilt_range2(right_tilt)
-    # # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
-    # # estimate_ground.sort_list()
-    # estimate_ground.left_arm_estimate(10,  left_pitch)
-    # # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
+    ####################### 2回目 ##############################
+    estimate_ground.right_tilt_range2(right_tilt)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    # estimate_plot(0.4,left_arm_range,right_arm_range,body_range,gp)
     # estimate_ground.sort_list()
-    # # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
-    # # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
-    # estimate_ground.left_tilt_range(left_tilt)
+    estimate_ground.left_arm_estimate(10,  left_pitch)
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
     estimate_ground.sort_list()
+    # left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
+    # estimate_plot(0.6,left_arm_range,right_arm_range,body_range,gp)
+    estimate_ground.left_tilt_range(left_tilt)
+    estimate_ground.sort_list()
+    
     left_arm_range,right_arm_range,body_range,gp = estimate_ground.get_ground_range()
     estimate_plot(ax,1,left_arm_range,right_arm_range,body_range,gp)
 
