@@ -128,7 +128,7 @@ class IMU:
             print("acc deg        :"+f'{acc_roll:11.06f}'+f'{acc_pitch:11.06f}') 
             print("filtering roll :"+f'{filter_roll:11.06f}')
             print("filtering pitch:"+f'{filter_pitch:11.06f}')
-            print("\033[8A",end="")
+            print("\033[9A",end="")
 
             # print("Time:",time.time())
             # print("Time stamp:",time_stamp)
