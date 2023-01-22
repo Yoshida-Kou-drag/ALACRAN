@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-WORD_SIZE = 72
+WORD_SIZE = 104
 READ_WORD_SIZE=56
 MMAP_FILE_NAME = "hoge"
 mm = mmap.mmap(-1, WORD_SIZE, tagname=MMAP_FILE_NAME)
@@ -96,9 +96,9 @@ class IMU:
         self.acc[0] =recv_data[1]
         self.acc[1] =recv_data[2]
         self.acc[2] =recv_data[3]
-        self.gyro[0] = math.degrees(recv_data[4])/6.2
-        self.gyro[1] = math.degrees(recv_data[5])/6.2
-        self.gyro[2] = math.degrees(recv_data[6])/6.2
+        self.gyro[0] = math.degrees(recv_data[4])/3
+        self.gyro[1] = math.degrees(recv_data[5])/3
+        self.gyro[2] = math.degrees(recv_data[6])/3
    
 
         self.gyro_deg = self.get_gyro_degree(self.gyro,dt)
@@ -124,9 +124,12 @@ class IMU:
     
         return [time_stamp, filter_roll, filter_pitch]
 
-def read_imu(imu_data,calib_data):
+def read_imu(imu_data,calib_data,arm_deg,save=True):
     global mm ,WORD_SIZE,READ_WORD_SIZE
     imu = IMU()
+    if save:
+        file_name = "../SIM_data/imu_data_"+str(time.time())+".csv"
+        file = open(file_name,"w")
 
     cnt = 0
 
@@ -136,11 +139,21 @@ def read_imu(imu_data,calib_data):
             # cnt += 1
             # mmapWriteShort(0, cnt)
             # print(mmapReadShort(0))
-            imu_data[0],imu_data[1],imu_data[2] = imu.GetSensorData(mmapReadShort(mm,READ_WORD_SIZE,0),calib_data,False)
+            imu_data[0],imu_data[1],imu_data[2] = imu.GetSensorData(mmapReadShort(mm,READ_WORD_SIZE,0),calib_data,True)
             filter_data = imu_data[1]-calib_data[0],imu_data[2]-calib_data[1]
-            # print(filter_data)
+            
+            if imu_data[1]-calib_data[0] < 0.5 and imu_data[2]-calib_data[1] < 0.5:
+                ptop_deg = 0
+            else :
+                ptop_deg = math.degrees(math.atan2(imu_data[1], imu_data[2]))
+            
+            if save:
+                file.write(str(imu_data[0]) + "," + str(filter_data[0]) + "," + str(filter_data[1]) + "," + str(math.degrees(arm_deg[0])) + "," + str(math.degrees(arm_deg[1]))+ "," + str(ptop_deg)  + "\n") 
+            # print(arm_deg[0],arm_deg[1])
             time.sleep(0.01)
         except KeyboardInterrupt:
+            if save:
+                file.close()
             mm.close()
 
 def zero_calib(imu_data,calib_data):
@@ -206,7 +219,7 @@ def mmapWriteShort(adr:int, data):
         val = mmapReadShort(mm,READ_WORD_SIZE,0)
         ddata = list(val)+data
         # bytes = ddata.to_bytes(WORD_SIZE, 'little',signed=True)
-        bytes = struct.pack('ddddddddd', *ddata)
+        bytes = struct.pack('ddddddddddddd', *ddata)
         for i in range(WORD_SIZE):
             mm[adr*WORD_SIZE + i] = bytes[i]
         
@@ -243,27 +256,129 @@ if __name__ == "__main__":
     # （tagname=Noneの場合は無名共有メモリとなる）
     calib_data = multiprocessing.Array('d', 2) 
     imu_data = multiprocessing.Array('d', 3)
+    arm_deg = multiprocessing.Array('d',2)
 
-    p1 = multiprocessing.Process(name="p1", target=read_imu, args=(imu_data,calib_data),daemon=False)
+    p1 = multiprocessing.Process(name="p1", target=read_imu, args=(imu_data,calib_data,arm_deg,False),daemon=False)
     p2 = multiprocessing.Process(name="p2", target=plot_imu, args=(imu_data,calib_data),daemon=False)
 
     p1.start()
     p2.start()
+    tail_link = math.radians(-60),math.radians(60)
+    motor_speed = 0,0
+    mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
 
     while True :
+
         input()
+        # time.sleep(5)
+        
+        #####段差踏破アルゴリズム############################3
+        # print("start moving")
+        # tail_link = math.radians(-60),math.radians(60)
+        # motor_speed = -2,-2
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("1")
+        # time.sleep(5)
+
+        # motor_speed = -1.5,-1.5
+        # arm_deg[0],arm_deg[1] = math.radians(45),math.radians(45)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("2")
+        # time.sleep(5)
+
+        # motor_speed = -0,-0
+        # arm_deg[0],arm_deg[1] = math.radians(-20),math.radians(-20)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("3")
+        # time.sleep(2)
+        
+        # tail_link = math.radians(-20),math.radians(0)
+        # motor_speed = -1,-1
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("4")
+        # time.sleep(5)
+
+        # tail_link = math.radians(30),math.radians(30)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("5")
+        # time.sleep(3)
+
+        # arm_deg[0],arm_deg[1] = math.radians(-30),math.radians(-30)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # time.sleep(5)
+
+        # # motor_speed = -1,-1
+        # # tail_link = math.radians(40),math.radians(30)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("6")
+        # time.sleep(5)
+
+        # motor_speed = 0,0
+        # tail_link = math.radians(-60),math.radians(-60)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("7")
+        # time.sleep(3)
+
+        # tail_link = math.radians(-60),math.radians(60)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("8")
+        # time.sleep(3)
+
+        # arm_deg[0],arm_deg[1] = math.radians(20),math.radians(20)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("9")
+        # time.sleep(3)
+
+        # motor_speed = -1.5,-1.5
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("10")
+        # time.sleep(5)
+
+        # motor_speed = -2,-2
+        # arm_deg[0],arm_deg[1] = math.radians(0),math.radians(0)
+        # mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+        # print("11")
+        # time.sleep(2)
+#####################################################################
+
         print("start estimation")
         zero_calib(imu_data,calib_data)
         print("move 1")
-        mmapWriteShort(0,[-math.pi*0.1,0])
-        time.sleep(5)
+        for i in range(300):
+            arm_deg[0],arm_deg[1] = -math.radians(i*0.1),0
+            mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+            time.sleep(0.01)
+        time.sleep (2)
+        
         print("move 2")
-        mmapWriteShort(0,[-math.pi*0.1,-math.pi*0.10])
-        time.sleep(5)
+        for i in range(300):
+            arm_deg[0],arm_deg[1] = -math.radians(30),-math.radians(i*0.1)
+            mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+            time.sleep(0.01)
+        time.sleep(2)
+
         print("move 3")
-        mmapWriteShort(0,[0,-math.pi*0.1])
-        time.sleep(5)
+        for i in range(300):
+            arm_deg[0],arm_deg[1] = -math.radians((300-i)*0.1),-math.radians((300-i)*0.1)
+            mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+            time.sleep(0.01)
+        time.sleep(2)
+
         print("move 4")
-        mmapWriteShort(0,[-math.pi*0.1,-math.pi*0.10])
-        time.sleep(5)
-        mmapWriteShort(0,[0,0])
+        for i in range(300):
+            arm_deg[0],arm_deg[1] = 0,-math.radians(i*0.1) 
+            mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+            time.sleep(0.01)
+        time.sleep(2)
+
+        print("move 5")
+        for i in range(300):
+            arm_deg[0],arm_deg[1] = -math.radians(i*0.1),-math.radians(30) 
+            mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+            time.sleep(0.01)
+        time.sleep(2)
+
+        for i in range(300):
+            arm_deg[0],arm_deg[1] = -math.radians((300-i)*0.1),-math.radians((300-i)*0.1)
+            mmapWriteShort(0,[arm_deg[0], arm_deg[1], tail_link[0], tail_link[1], motor_speed[0], motor_speed[1]])
+            time.sleep(0.01)
