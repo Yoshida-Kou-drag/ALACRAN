@@ -11,9 +11,10 @@ my_chain = Chain.from_urdf_file("alacran_robotarm.URDF")
 
 i=0
 while True:
+    axis_x = 0.2
     for i in range (10):
         axis_y = -i*0.05-0.1
-        my_chain.plot(my_chain.inverse_kinematics([0, axis_y, 0.2]), ax)
+        my_chain.plot(my_chain.inverse_kinematics([axis_x, axis_y, 0.2]), ax)
 
         ax.auto_scale_xyz([-0.5,0.5], [-0.5,0.5], [0,1])
         plt.pause(0.1)
