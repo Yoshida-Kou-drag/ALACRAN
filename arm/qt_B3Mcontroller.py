@@ -14,11 +14,11 @@ class Example(QMainWindow):
 
         self.initUI()
 
-        self.pos = [0] * 10
+        self.pos = [0] * 12
         self.id = 1
 
         self.aaa = b3mCtrl.B3mClass()
-        self.aaa.begin("/dev/ttyUSB0",1500000)
+        self.aaa.begin("COM3",1500000)
        
         print (self.aaa.setTrajectoryType(255,"EVEN"))
         print (self.aaa.setMode(255,"POSITION"))
@@ -54,7 +54,7 @@ class Example(QMainWindow):
         # QComboBoxオブジェクトの作成
         combo = QComboBox(self)
         # アイテムの名前設定
-        for id in range(1,10):
+        for id in range(1,12):
             combo.addItem(str(id))
 
         result_btn =QPushButton("Result", self)
@@ -101,7 +101,7 @@ class Example(QMainWindow):
         self.pos =[0, 0, -14000, 14000, -28000, 7000, 0, 0, 0, 4000] 
         print(self.pos)
         
-        for id in range(1,10):
+        for id in range(1,12):
             print (self.aaa.positionCmd(id, self.pos[id], 5))
     
     def home(self):
