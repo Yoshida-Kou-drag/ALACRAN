@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # df = pd.read_csv('robot_data.csv', names=['num1', 'num2','num3'])
-df = pd.read_csv('imu_data_30_70_80-35.csv', names=['num1', 'num2','num3','num4','num5','num6'])
+df = pd.read_csv('test1.csv', names=['num1', 'num2','num3','num4','num5','num6'])
 plt.figure()
 ax = plt.axes()
 plt.minorticks_on()

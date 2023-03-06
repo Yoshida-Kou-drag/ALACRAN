@@ -61,7 +61,7 @@ def deg_to_duty(degree):
     dc = 2.0 + (11.0-2.0)/180*(degree+90)
     return dc
 
-def servo_moving(imu_data,calib_data,left_deg_input,right_deg_input):
+def servo_moving(deg, imu_data,calib_data,left_deg_input,right_deg_input):
     gpio_pin0 = 18 #right
     gpio_pin1 = 19 #left
 
@@ -82,7 +82,7 @@ def servo_moving(imu_data,calib_data,left_deg_input,right_deg_input):
         # left_deg_input, right_deg_input=input().split()
         # left_deg, right_deg= int(left_deg_input)+15, -int(right_deg_input)+21
         
-        left_deg_input.value, right_deg_input.value=10, 0
+        left_deg_input.value, right_deg_input.value=deg, 0
         left_deg, right_deg= int(left_deg_input.value)+15, -int(right_deg_input.value)+21
         pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
         pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
@@ -93,7 +93,7 @@ def servo_moving(imu_data,calib_data,left_deg_input,right_deg_input):
         i=0
         while abs(imu_data[1]-calib_data[0])>0.05:
             i+=0.2
-            left_deg_input.value, right_deg_input.value=10, i
+            left_deg_input.value, right_deg_input.value=deg, i
             left_deg, right_deg= left_deg_input.value+15, -right_deg_input.value+21
             pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
             pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
@@ -102,7 +102,7 @@ def servo_moving(imu_data,calib_data,left_deg_input,right_deg_input):
         time.sleep(2)
         amama,left_pitch = get_sensor_avg(imu_data,calib_data)
 
-        left_deg_input.value, right_deg_input.value=0, 10
+        left_deg_input.value, right_deg_input.value=0, deg
         left_deg, right_deg= int(left_deg_input.value)+15, -int(right_deg_input.value)+21
         pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
         pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
@@ -113,7 +113,7 @@ def servo_moving(imu_data,calib_data,left_deg_input,right_deg_input):
         i=0
         while abs(imu_data[1]-calib_data[0])>0.05:
             i+=0.2
-            left_deg_input.value, right_deg_input.value=i, 10
+            left_deg_input.value, right_deg_input.value=i, deg
             left_deg, right_deg= left_deg_input.value+15, -right_deg_input.value+21
             pi.hardware_PWM(gpio_pin0,50,int(deg_to_duty(right_deg)*10000))
             pi.hardware_PWM(gpio_pin1,50,int(deg_to_duty(left_deg)*10000))
@@ -151,6 +151,8 @@ if __name__ == "__main__":
     right_deg_input = multiprocessing.Value('d',0)
     # filter_imu = multiprocessing.Array('d', 3)
 
+    deg=5 # フリッパーの角度をここで決める
+
     try :
         p1 = multiprocessing.Process(name="p1", target=read_imu, args=(imu_data,),daemon=False)
         p2 = multiprocessing.Process(name="p2", target=write_csv, args=(imu_data,calib_data,left_deg_input,right_deg_input),daemon=False)
@@ -161,9 +163,10 @@ if __name__ == "__main__":
         while True:
             input()
             print("starting!")
-            left_tilt,right_tilt,left_pitch,right_pitch = servo_moving(imu_data,calib_data,left_deg_input,right_deg_input)
+            left_tilt,right_tilt,left_pitch,right_pitch = servo_moving(deg,imu_data,calib_data,left_deg_input,right_deg_input)
             print(left_tilt,right_tilt,left_pitch,right_pitch)
-            estimate_2D_plot.estimate_main(left_tilt,right_tilt,left_pitch,right_pitch)
+            print("finish!")
+            estimate_2D_plot.estimate_main(deg,left_tilt,right_tilt,left_pitch,right_pitch)
     
     except KeyboardInterrupt:
         sys.exit()

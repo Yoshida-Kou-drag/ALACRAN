@@ -44,7 +44,8 @@ class EstimateGround:
     def get_ground_range(self, debug=False):
         self.sim_calib = np.array([0, 36, 18 - self.plot_counter]) #[x,y(回転軸から重心の距離),z(モデルの高さ分)]
         self.plot_counter += 1 #描画の層を一層上にあげる
-        body_range = self.body_range - self.sim_calib
+        if len(self.body_range)!=0:
+            body_range = self.body_range - self.sim_calib
         left_arm_range = self.left_arm_range -self.sim_calib
         right_arm_range = self.right_arm_range - self.sim_calib
 
