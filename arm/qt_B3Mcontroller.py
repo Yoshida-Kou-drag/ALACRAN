@@ -20,7 +20,7 @@ class Example(QMainWindow):
         self.aaa = b3mCtrl.B3mClass()
         self.aaa.begin("COM3",1500000)
        
-        print (self.aaa.setTrajectoryType(255,"EVEN"))
+        # print (self.aaa.setTrajectoryType(255,"EVEN"))
         print (self.aaa.setMode(255,"POSITION"))
 
         # self.showMaximized() 
@@ -69,7 +69,7 @@ class Example(QMainWindow):
         combo.activated[str].connect(self.onActivated)        
         result_btn.clicked.connect(self.result) 
 
-        self.setGeometry(300, 300, 300, 200)
+        self.setGeometry(300, 300, 300, 400)
         self.setWindowTitle('QComboBox')
         self.show()
 
@@ -81,37 +81,40 @@ class Example(QMainWindow):
         # ラベルの長さを調整
         self.lbl.adjustSize()  
         print (self.aaa.setMode(self.id,"POSITION"))
+        print("text",text)
 
     def motor_move(self):
-        if self.id == 2 :
-            self.pos[3] = -self.pos[2]
-            print (self.aaa.positionCmd(2, self.pos[2], 1))
-            print (self.aaa.positionCmd(3, self.pos[3], 1))
-        elif self.id == 3 :
-            self.pos[2] = -self.pos[3]
-            print (self.aaa.positionCmd(2, self.pos[2], 1))
-            print (self.aaa.positionCmd(3, self.pos[3], 1))
-        else:
-            print (self.aaa.positionCmd(self.id, self.pos[self.id], 1))
+        pass
+        # if self.id == 2 :
+        #     self.pos[3] = -self.pos[2]
+        #     print (self.aaa.positionCmd(2, self.pos[2], 1))
+        #     print (self.aaa.positionCmd(3, self.pos[3], 1))
+        # elif self.id == 3 :
+        #     self.pos[2] = -self.pos[3]
+        #     print (self.aaa.positionCmd(2, self.pos[2], 1))
+        #     print (self.aaa.positionCmd(3, self.pos[3], 1))
+        # else:
+        #     print (self.aaa.positionCmd(self.id, self.pos[self.id], 1))
 
     def close(self):
         print (self.aaa.setTrajectoryType(255,"EVEN"))
         print (self.aaa.setMode(255,"POSITION"))
         # self.pos = [0, 0, -14000, 14000, 8000, 9000, 0, 0, 0, 2000]
-        self.pos =[0, 0, -14000, 14000, -28000, 7000, 0, 0, 0, 4000] 
+        self.pos =[0, 0, 0, 0, 0, 0, 0, -7568, 7594, 7000, 0, 0]
+                #  0, 1, 2, 3, 4, 5, 6, 7,     8,    9,   10,11
         print(self.pos)
         
         for id in range(1,12):
-            print (self.aaa.positionCmd(id, self.pos[id], 5))
+            print (self.aaa.positionCmd(id, self.pos[id], 10))
     
     def home(self):
         print (self.aaa.setTrajectoryType(255,"EVEN"))
         print (self.aaa.setMode(255,"POSITION"))
-        self.pos = [0, 0, 0, 0, 0, -9000, 0, 0, 0, 0]
+        self.pos =[0, 0, 0, 0, 0, 0, 0, -5000, 5000, 5000, 2000, 0]
 
         print(self.pos)
         
-        for id in range(1,10):
+        for id in range(1,12):
             print (self.aaa.positionCmd(id, self.pos[id], 10))
 
     def buttonClicked(self):
@@ -132,7 +135,7 @@ class Example(QMainWindow):
             self.motor_move()
 
         if sender.text() == "FREE_MODE":
-            print (self.aaa.setMode(self.id,"FREE"))
+            print (self.aaa.setMode(255,"FREE"))
 
         else:
             pass

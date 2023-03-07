@@ -8,11 +8,11 @@ import time
 
 if __name__ == '__main__':
     aaa = b3mCtrl.B3mClass()
-    aaa.begin("/dev/ttyUSB0",1500000)
-    
+    # aaa.begin("/dev/ttyUSB0",1500000)
+    aaa.begin("COM3",1500000)
     # idx= [0]
-    idx= [1,2,3,4,5,6,7,8,9]
-    pos = [0]*10
+    idx= [6,7,8,9,10]
+    pos = [0]*11
 
     for id in idx:
         print("id = ",str(id))
@@ -24,7 +24,7 @@ if __name__ == '__main__':
             if(pos[id][0] != False):
                 print(pos[id][0])
                 run=0
-            if(pos[id][0] is not False):
-                pass
+            if(pos[id][0] == False):
+                print("Hello")
     
     print("pos =",pos )
