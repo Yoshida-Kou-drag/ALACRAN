@@ -1,0 +1,28 @@
+１．zipファイルを解凍してtestフォルダごと自分の実行環境に入れてください
+　　（raspi OSとかwindows10とか)
+２．testフォルダ内に入って以下のコマンドを入力して実行してください 
+$   python3 testB3M_pos.py
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+トラブルシューティング
+
+case1:
+serial.serialutil.SerialException: Cannot configure port, something went wrong. Original message: OSError(22, 'パラメーターが間違っています。', None, 87)
+解決方法:
+1.B3MとPCあるいはraspiがつながっていることを確認
+2.B3Mに電源が入っていることを確認
+3.testB3M_pos内のポート設定のポート番号とボーレートがあっているか確かめてください
+
+4.windowsではデバイスマネージャ内のポートから確認できます
+  この中にCOMX(Xは数字)があればそれを設定してください。
+
+  Linuxでは以下のコマンドで確認してください
+  $ ls /dev
+  この中にttyUSBX(Xは数字)があればそれを設定してください。
+
+
+case2:
+Linux系で「権限がありません」と出た場合
+解決方法
+以下のコマンドでプログラムを実行しなおしてみてください
+$ sudo python3 testB3M_pos.py
