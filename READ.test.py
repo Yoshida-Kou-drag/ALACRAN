@@ -78,18 +78,23 @@ def B3M_Read_CMD(servo_id, Data_size, Address):
 #COMポートを開く
 b3m = serial.Serial('/dev/ttyUSB0', baudrate=1500000, parity=serial.PARITY_NONE, timeout=0.5)
 
-#B3M_Read_CMD(servo_id, Data_size, Address)
-#ID番号を読み込む(ID:0,1byte読み込み,アドレス：0x00(ID))
-bl, reData = B3M_Read_CMD(13, 1, 0x00)
-print(bl, reData)
+#ロボットアーム・ハンドのサーボID
+idy= [6,7,8,9,10,11,12]
 
-#現在位置を読み込む(ID:0,2byte読み込み,アドレス：0x2C(現在位置))
-bl, reData = B3M_Read_CMD(13, 2, 0x2C)
-print(bl, reData)
+for id in range (len(idy)):
+    
+    #B3M_Read_CMD(servo_id, Data_size, Address)
+    #ID番号を読み込む(ID:0,1byte読み込み,アドレス：0x00(ID))
+    bl, reData = B3M_Read_CMD(idy[id], 1, 0x00)
+    print(bl, reData)
 
-#通信速度を読み込む(ID:0,4byte読み込み,アドレス：0x01(通信速度))
-bl, reData = B3M_Read_CMD(13, 4, 0x01)
-print(bl, reData)
+    #現在位置を読み込む(ID:0,2byte読み込み,アドレス：0x2C(現在位置))
+    bl, reData = B3M_Read_CMD(idy[id], 2, 0x2C)
+    print(bl, reData)
+
+    #通信速度を読み込む(ID:0,4byte読み込み,アドレス：0x01(通信速度))
+    bl, reData = B3M_Read_CMD(idy[id], 4, 0x01)
+    print(bl, reData)
 
 #ポートを閉じる
 b3m.close()
