@@ -79,7 +79,7 @@ def B3M_Read_CMD(servo_id, Data_size, Address):
 b3m = serial.Serial('/dev/ttyUSB0', baudrate=1500000, parity=serial.PARITY_NONE, timeout=0.5)
 
 #ロボットアーム・ハンドのサーボID
-idy= [6,7,8,9,10,11,12]
+idy= [6,7,8,9,10]
 
 for id in range (len(idy)):
     
