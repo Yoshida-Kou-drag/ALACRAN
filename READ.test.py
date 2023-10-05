@@ -81,7 +81,7 @@ b3m = serial.Serial('/dev/ttyUSB0', baudrate=1500000, parity=serial.PARITY_NONE,
 #ロボットアーム・ハンドのサーボID
 idy= [6,7,8,9,10,11,12]
 
-for id in range(len(idy))
+for id in range(len(idy)):
 
 #B3M_Read_CMD(servo_id, Data_size, Address)
 #ID番号を読み込む(ID:0,1byte読み込み,アドレス：0x00(ID))
