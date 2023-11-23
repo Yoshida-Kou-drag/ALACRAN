@@ -21,20 +21,20 @@ def B3M_Write_CMD(servo_id, TxData, Address):
     #チェックサムを用意
     checksum = 0
     for i in txCmd:
-      checksum += i
+        checksum += i
  
     #リストの最後にチェックサムを挿入する
-    txCmd.append(checksum & 0xff)
+        txCmd.append(checksum & 0xff)
  
     #WRITEコマンドを送信
-    b3m.write(txCmd)
+        b3m.write(txCmd)
  
     #サーボからの返事を受け取る
-    rxCmd = b3m.read(5)
+        rxCmd = b3m.read(5)
  
     #もしリスト何になにも入っていなかったら正常に受信できていないと判断
     if len(rxCmd) == 0:
-      return False
+        return False
  
     #問題なければ返事を返す
     return True
@@ -54,20 +54,20 @@ def B3M_setPos_CMD(servo_id, pos, MoveTime):
     #チェックサムを作成
     checksum = 0
     for i in txCmd:
-      checksum += i
+        checksum += i
  
       #リストの最後にチェックサムを挿入する
-      txCmd.append(checksum & 0xff)
+        txCmd.append(checksum & 0xff)
  
       #コマンドを送信
-      b3m.write(txCmd)
+        b3m.write(txCmd)
  
       #サーボからの返事を受け取る
-      rxCmd = b3m.read(7)
+        rxCmd = b3m.read(7)
  
     #もしリスト何になにも入っていなかったら正常に受信できていないと判断
     if len(rxCmd) == 0:
-      return False
+        return False
  
     #問題なければ返事を返す
     return True
