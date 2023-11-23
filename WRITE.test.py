@@ -95,13 +95,15 @@ angle7 = -5000
 angle8 = 5000
 angle9 = 5000
 
-idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
-
-for ida in range(len(idangle)):
-
-    #ID0、500msかけて5000(50度)の位置に移動する
-    reData = B3M_setPos_CMD(idangle[ida, 1], idangle[ida, 2], 500)
-    time.sleep(0.5) #サーボが到達するまで次の指示を待つ
+#ID0、500msかけて5000(50度)の位置に移動する
+reData = B3M_setPos_CMD(6, angle6, 500)
+  time.sleep(0.5) 
+reData = B3M_setPos_CMD(7, angle7, 500)
+  time.sleep(0.5) 
+reData = B3M_setPos_CMD(8, angle8, 500)
+  time.sleep(0.5) 
+reData = B3M_setPos_CMD(9, angle9, 500)
+  time.sleep(0.5) 
 
 #ポートを閉じる
 b3m.close()
