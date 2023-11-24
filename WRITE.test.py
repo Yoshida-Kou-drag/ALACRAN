@@ -24,13 +24,13 @@ def B3M_Write_CMD(servo_id, TxData, Address):
         checksum += i
  
     #リストの最後にチェックサムを挿入する
-    txCmd.append(checksum & 0xff)
+        txCmd.append(checksum & 0xff)
  
     #WRITEコマンドを送信
-    b3m.write(txCmd)
+        b3m.write(txCmd)
  
     #サーボからの返事を受け取る
-    rxCmd = b3m.read(5)
+        rxCmd = b3m.read(5)
  
     #もしリスト何になにも入っていなかったら正常に受信できていないと判断
     if len(rxCmd) == 0:
@@ -57,13 +57,13 @@ def B3M_setPos_CMD(servo_id, pos, MoveTime):
         checksum += i
  
       #リストの最後にチェックサムを挿入する
-    txCmd.append(checksum & 0xff)
+        txCmd.append(checksum & 0xff)
  
       #コマンドを送信
-    b3m.write(txCmd)
+        b3m.write(txCmd)
  
       #サーボからの返事を受け取る
-    rxCmd = b3m.read(7)
+        rxCmd = b3m.read(7)
  
     #もしリスト何になにも入っていなかったら正常に受信できていないと判断
     if len(rxCmd) == 0:
@@ -90,23 +90,18 @@ reData = B3M_Write_CMD(0x00, 0x00, 0x5C)
 reData = B3M_Write_CMD(0x00, 0x00, 0x28)
 
 #B3M用角度への変換
-#angle6 = 5000
-#angle7 = -5000
-#angle8 = 5000
-#angle9 = 5000
+angle6 = 8000
+angle7 = -5000
+angle8 = 5000
+angle9 = 5000
 
-#ID0、500msかけて5000(50度)の位置に移動する
-reData = B3M_setPos_CMD(6, 8000, 500)
-time.sleep(0.5) 
+idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
 
-reData = B3M_setPos_CMD(7, -5000, 500)
-time.sleep(0.5) 
+for ida in range(len(idangle)):
 
-reData = B3M_setPos_CMD(8, 5000, 500)
-time.sleep(0.5) 
-
-reData = B3M_setPos_CMD(9, 5000, 500)
-time.sleep(0.5) 
+    #ID0、500msかけて5000(50度)の位置に移動する
+    reData = B3M_setPos_CMD(idangle[ida, 1], idangle[ida, 2], 500)
+    time.sleep(0.5) #サーボが到達するまで次の指示を待つ
 
 #ポートを閉じる
 b3m.close()
