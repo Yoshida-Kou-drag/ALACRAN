@@ -127,11 +127,11 @@ reData = B3M_setPos_CMD(6, 5000, 500)
 print(reData)
 time.sleep(0.5) #サーボが到達するまで次の指示を待つ
 
-reData = B3M_setPos_CMD(6, 13000, 500)
+reData = B3M_setPos_CMD(6, -5000, 500)
 print(reData)
 time.sleep(0.5) #サーボが到達するまで次の指示を待つ
 
-reData = B3M_setPos_CMD(6, 9000, 500)
+reData = B3M_setPos_CMD(6, 0, 500)
 print(reData)
 time.sleep(0.5) #サーボが到達するまで次の指示を待つ
 
