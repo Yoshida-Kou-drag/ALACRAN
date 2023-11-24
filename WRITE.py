@@ -99,23 +99,23 @@ b3m = serial.Serial('/dev/ttyUSB0', baudrate=1500000, parity=serial.PARITY_NONE,
 #B3M_Write_CMD(servo_id, TxData, Address)
 
 #動作モード：Free (動作モードと特性を設定するため、設定書き換え中の誤動作を防止するため脱力にしておく)
-reData = B3M_Write_CMD(0x00, 0x02, 0x28)
+reData = B3M_Write_CMD(6, 0x02, 0x28)
 print(reData)
 
 #位置制御モードに設定 (角度を指定して動作するモードです)
-reData = B3M_Write_CMD(0x00, 0x02, 0x28)
+reData = B3M_Write_CMD(6, 0x02, 0x28)
 print(reData)
 
 #軌道生成タイプ：Even (直線補間タイプの位置制御を指定)
-reData = B3M_Write_CMD(0x00, 0x01, 0x29)
+reData = B3M_Write_CMD(6, 0x01, 0x29)
 print(reData)
 
 #ゲインプリセット：No.0 (PIDのプリセットゲインを位置制御モード用に設定)
-reData = B3M_Write_CMD(0x00, 0x00, 0x5C)
+reData = B3M_Write_CMD(6, 0x00, 0x5C)
 print(reData)
 
 #動作モード：Normal （Freeの状態からトルクオン）
-reData = B3M_Write_CMD(0x00, 0x00, 0x28)
+reData = B3M_Write_CMD(6, 0x00, 0x28)
 print(reData)
 
 
