@@ -124,12 +124,15 @@ angle7 = -5000
 angle8 = 5000
 angle9 = 5000
 
-idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
+#idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
 
-for ida in range(len(idangle)):
+#for ida in range(len(idangle)):
 
-    #ID0、500msかけて5000(50度)の位置に移動する
-    reData = B3M_setPos_CMD(idangle[ida, 1], idangle[ida, 2], 500)
-    
+#ID0、500msかけて5000(50度)の位置に移動する
+reData = B3M_setPos_CMD(6, angle6, 500)
+reData = B3M_setPos_CMD(7, angle7, 500)
+reData = B3M_setPos_CMD(8, angle8, 500)
+reData = B3M_setPos_CMD(9, angle9, 500)
+
 #ポートを閉じる
 b3m.close()
