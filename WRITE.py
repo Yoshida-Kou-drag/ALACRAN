@@ -120,9 +120,9 @@ print(reData)
 
 #B3M用角度への変換
 angle6 = -3000
-angle7 = -7000
-angle8 = 7000
-angle9 = 7000
+angle7 = -3000
+angle8 = 3000
+angle9 = 3000
 
 #idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
 
