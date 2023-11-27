@@ -99,42 +99,37 @@ b3m = serial.Serial('/dev/ttyUSB0', baudrate=1500000, parity=serial.PARITY_NONE,
 #B3M_Write_CMD(servo_id, TxData, Address)
 
 #動作モード：Free (動作モードと特性を設定するため、設定書き換え中の誤動作を防止するため脱力にしておく)
-reData = B3M_Write_CMD(6, 0x02, 0x28)
+reData = B3M_Write_CMD(0xFF, 0x02, 0x28)
 print(reData)
 
 #位置制御モードに設定 (角度を指定して動作するモードです)
-reData = B3M_Write_CMD(6, 0x02, 0x28)
+reData = B3M_Write_CMD(0xFF, 0x02, 0x28)
 print(reData)
 
 #軌道生成タイプ：Even (直線補間タイプの位置制御を指定)
-reData = B3M_Write_CMD(6, 0x01, 0x29)
+reData = B3M_Write_CMD(0xFF, 0x01, 0x29)
 print(reData)
 
 #ゲインプリセット：No.0 (PIDのプリセットゲインを位置制御モード用に設定)
-reData = B3M_Write_CMD(6, 0x00, 0x5C)
+reData = B3M_Write_CMD(0xFF, 0x00, 0x5C)
 print(reData)
 
 #動作モード：Normal （Freeの状態からトルクオン）
-reData = B3M_Write_CMD(6, 0x00, 0x28)
+reData = B3M_Write_CMD(0xFF, 0x00, 0x28)
 print(reData)
 
+#B3M用角度への変換
+angle6 = 3000
+angle7 = -5000
+angle8 = 5000
+angle9 = 5000
 
-#サーボに目標時間を指定して角度指示
-#※軌道生成タイプ：Normal(0x00)の時は目標時間は反映されません。
-#B3M_setPos_CMD(servo_id, pos, MoveTime)
-#ID0、500msかけて5000(50度)の位置に移動する
-reData = B3M_setPos_CMD(6, 5000, 500)
-print(reData)
-time.sleep(0.5) #サーボが到達するまで次の指示を待つ
+idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
 
-reData = B3M_setPos_CMD(6, -5000, 500)
-print(reData)
-time.sleep(0.5) #サーボが到達するまで次の指示を待つ
+for ida in range(len(idangle)):
 
-reData = B3M_setPos_CMD(6, 0, 500)
-print(reData)
-time.sleep(0.5) #サーボが到達するまで次の指示を待つ
-
-
+    #ID0、500msかけて5000(50度)の位置に移動する
+    reData = B3M_setPos_CMD(idangle[ida, 1], idangle[ida, 2], 500)
+    
 #ポートを閉じる
 b3m.close()
