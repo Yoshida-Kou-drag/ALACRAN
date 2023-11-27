@@ -119,10 +119,10 @@ reData = B3M_Write_CMD(0xFF, 0x00, 0x28)
 print(reData)
 
 #B3M用角度への変換
-angle6 = 3000
-angle7 = -5000
-angle8 = 5000
-angle9 = 5000
+angle6 = -3000
+angle7 = -7000
+angle8 = 7000
+angle9 = 7000
 
 #idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
 
