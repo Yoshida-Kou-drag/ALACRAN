@@ -130,9 +130,14 @@ angle9 = 3000
 
 #ID0、500msかけて5000(50度)の位置に移動する
 reData = B3M_setPos_CMD(6, angle6, 1500)
+time.sleep(0.5)
+
 reData = B3M_setPos_CMD(7, angle7, 1500)
 reData = B3M_setPos_CMD(8, angle8, 1500)
+time.sleep(0.5)
+
 reData = B3M_setPos_CMD(9, angle9, 1500)
+time.sleep(0.5)
 
 #ポートを閉じる
 b3m.close()
