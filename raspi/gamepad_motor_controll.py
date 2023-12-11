@@ -41,10 +41,10 @@ DIRpin_left = 16
 DIRpin_right = 20
 
 pi = pigpio.pi()
-pi.set_mode(pwm_left, 1)
-pi.set_mode(pwm_right, 1T)
-pi.set_mode(DIRpin_left, 1)
-pi.set_mode(DIRpin_right, 1)
+pi.set_mode(pwm_left, pigpio.output)
+pi.set_mode(pwm_right, pigpio.output)
+pi.set_mode(DIRpin_left, pigpio.output)
+pi.set_mode(DIRpin_right, pigpio.output)
 
 # pygame初期化
 pygame.init()                             #pygameに必要な全てのモジュールが初期化される
