@@ -122,7 +122,7 @@ print(reData)
 angle6 = -3000
 angle7 = -3000
 angle8 = 3000
-angle9 = 6000
+angle9 = 0
 
 #idangle = [[6, angle6], [7, angle7], [8, angle8], [9, angle9]]
 
